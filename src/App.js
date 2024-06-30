@@ -1,4 +1,3 @@
-import logo from './logo.svg';
 import KuReviewLogo from './logo.png'
 import './App.css';
 
