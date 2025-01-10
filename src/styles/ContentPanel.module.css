@@ -1,0 +1,21 @@
+td {
+    padding-right: 2rem;
+    padding-top: 1rem;
+}
+tr {
+    /* border-bottom: 1px solid #B8B8B8; */
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.dropdown {
+    text-align: right;
+    cursor: pointer;
+}
+
+.lesson-name {
+    font-weight: bolder;
+}
