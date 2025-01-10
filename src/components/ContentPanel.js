@@ -3,7 +3,6 @@ import '../styles/ContentPanel.module.css';
 import styles from '../styles/ContentPanel.module.css'
 
 export default function ContentPanel() {
-    // State to manage which lesson is expanded
     const [expandedLesson, setExpandedLesson] = useState(null);
 
     const handleToggle = (lesson) => {
