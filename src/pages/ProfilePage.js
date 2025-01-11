@@ -1,39 +1,103 @@
-// src/pages/ProfilePage.js
+import * as React from 'react';
+import { BarChart } from '@mui/x-charts/BarChart';
+import { Paper, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import Navbar from "../components/navBar";
+import styles from '../styles/Profile.module.css'; // Assuming you will style your page via CSS
 
-import React from 'react';
-import styles from '../styles/Profile.module.css';
-import ScoreChart from '../components/ScoreChart'; // Adjust the path as needed
+export default function ProfilePage() {
+  const [round, setRound] = React.useState('1st Round');
 
-function Profile() {
+  const handleRoundChange = (event) => {
+    setRound(event.target.value);
+  };
+
   return (
-    <div className={styles.profilePage}>
-      <header className={styles.header}>
-        <div className={styles.logoSection}>
-          <img src="/Users/preme/Ku-review/KUReview-frontend/src/logo.png" alt="KUReview Logo" className={styles.logo} />
-          <div className={styles.subtitle}>BEST PRACTICE FOR KU LEARNERS</div>
+    <div className={styles.container}>
+      {/* Navbar */}
+      <div>
+        <Navbar />
+      </div>
+
+      {/* Flex Container for Left and Right Columns */}
+      <div className={styles.flexContainer}>
+        {/* Left Column */}
+        <div className={styles.leftColumn}>
+          {/* Profile Image */}
+          <div className={styles.profileImage}>
+            <img src="/userprofile.png" alt="User Profile" className={styles.profileImg} />
+          </div>
+          {/* User Info */}
+          <div className={styles.userInfo}>
+  <div className={styles.username}>Ploy Preme</div>
+  <div className={styles.userInfoText}>b6410xxxxxx</div>
+  <div className={styles.userInfoText}>Joined February 2024</div>
+</div>
+
+
+          {/* Round Selector */}
+          <div className={styles.roundSelector}>
+            <FormControl variant="filled">
+              <InputLabel id="round-select-label">Round</InputLabel>
+              <Select
+                labelId="round-select-label"
+                id="round-select"
+                value={round}
+                onChange={handleRoundChange}
+                label="Round"
+              >
+                <MenuItem value={'1st Round'}>1st Round</MenuItem>
+                <MenuItem value={'2nd Round'}>2nd Round</MenuItem>
+                <MenuItem value={'3rd Round'}>3rd Round</MenuItem>
+              </Select>
+            </FormControl>
+          </div>
         </div>
-        <div className={styles.userInfo}>
-          <div className={styles.userName}>Ploy Preme</div>
-          <div className={styles.userId}>b6410xxxxxxx</div>
-          <div className={styles.joinedDate}>Joined February 2024</div>
+
+        {/* Right Column */}
+        <div className={styles.rightColumn}>
+          {/* Bar Chart */}
+          <div className={styles.chartSection}>
+          <div className={styles.statisticsTitle}>Statistics</div>
+          <div className={styles.compareButton}>
+  Score Compare with Average
+</div>
+          {/* Color Boxes with Labels for Student score and Average */}
+          <div className={styles.legend}>
+  <div className={styles.legendItem}>
+    <div className={styles.colorBox} style={{ backgroundColor: '#02B2AF' }}></div>
+    <span>Student score</span>
+  </div>
+  <div className={styles.legendItem}>
+    <div className={styles.colorBox} style={{ backgroundColor: '#2E96FF' }}></div>
+    <span>Average</span>
+  </div>
+</div>
+
+
+            <BarChart
+              series={[
+                { data: [35, 44, 24, 34] }, // Student scores
+                { data: [51, 6, 49, 30] },  // Average scores
+              ]}
+              height={290}
+              xAxis={[{ data: ['Loop', 'Condition', 'List', 'Dictionary'], scaleType: 'band' }]}
+              margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
+            />
+          </div>
+
+
+
+          {/* Score Information in Two Columns */}
+          <Paper className={styles.scoreInfo}>
+  <div className={styles.scoreText}><strong>Your score:</strong> 42/100</div>
+  <div className={styles.scoreText}><strong>Mean:</strong> 44.42</div>
+  <div className={styles.scoreText}><strong>S.D.:</strong> 12.72</div>
+  <div className={styles.scoreText}><strong>Max:</strong> 77</div>
+  <div className={styles.scoreText}><strong>Min:</strong> 0</div>
+</Paper>
+
         </div>
-      </header>
-      <main className={styles.statistics}>
-        <h2>Statistics</h2>
-        <h3 className={styles.comparisonTitle}>Score Compare with average</h3>
-        <div className={styles.chartSection}>
-          <ScoreChart />
-        </div>
-        <div className={styles.scoreSummary}>
-          <div>Your score : 42/100</div>
-          <div>Mean : 44.42</div>
-          <div>S.D. : 12.72</div>
-          <div>Max: 77</div>
-          <div>Min: 0</div>
-        </div>
-      </main>
+      </div>
     </div>
   );
 }
-
-export default Profile;
