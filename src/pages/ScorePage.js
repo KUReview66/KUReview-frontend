@@ -1,4 +1,4 @@
-import ContentPanel from "../components/ContentPanel";
+import CountDownPanel from "../components/CountDownPanel";
 import Navbar from "../components/navBar";
 import ScoreBox from "../components/scoreBox";
 
@@ -21,14 +21,6 @@ export default function ScorePage() {
             condition: 15, 
             list: 12, 
             function: 15
-        },
-        {
-            round: 3,
-            total: 75, 
-            loop: 18, 
-            condition: 18, 
-            list: 19, 
-            function: 20
         }
     ]
 
@@ -46,8 +38,15 @@ export default function ScorePage() {
                     )))}
                 </div>
             </div>
-            <div className="right-panel" style={{width: '100%', marginTop: '2rem'}}>
-                    <ContentPanel />
+            <div className="right-panel" style={{width: '60%', marginTop: '2rem', borderLeft: '1px solid rgb(196, 196, 196)'}}>
+                    <CountDownPanel />
+                    <div style={{display: 'flex', textAlign: 'center', justifyContent: 'center', marginTop: '2rem'}}>
+                        <a href="/suggest" style={{textDecoration: 'underline'}}>
+                            Let us help you prepare before your exam &nbsp;
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+                    </div>
+                    
             </div>
         </div>
         </>

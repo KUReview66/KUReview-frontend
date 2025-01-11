@@ -1,0 +1,47 @@
+.time-display-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.countdown-display {
+    margin-top: 2rem;
+    display: flex;
+    justify-content: space-evenly;
+    border-radius: 15px;
+    background: rgb(56,67,193);
+    background: linear-gradient(90deg, rgba(56,67,193,1) 0%, rgba(0,212,255,1) 100%);
+}
+
+.countdown-value {
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    color: white;
+}
+
+.time{
+    font-size: 50px;
+    font-weight: bolder;
+    margin: 0;
+}
+
+span {
+    font-size: 12px;
+}
+
+.countdown-name, 
+.countdown-date {
+    text-align: center;
+}
+
+.line-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.line-center {
+    border: 2px solid black;
+    width: 80px;
+}
