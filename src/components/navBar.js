@@ -16,7 +16,7 @@ export default function Navbar() {
             <img src={KuReviewLogo} alt="logo" />
         </a>
         <nav ref={navRef}>
-            <a href="/">Suggestion</a>
+            <a href="/suggest">Suggestion</a>
 
             <div className={`${styles["profile"]} ${styles["large-screen-only"]}`}>
                 <a href="/profile">Profile</a>
