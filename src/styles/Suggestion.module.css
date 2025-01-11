@@ -1,0 +1,82 @@
+.container {
+    font-family: 'Nunito', sans-serif !important;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+  }
+  
+  .mainContent {
+    display: flex;
+    justify-content: space-between; /* Align left and right columns side by side */
+    margin-top: 30px;
+  }
+  
+  .leftColumn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 20px;
+    border-right: 2px solid #ccc; /* Add grid line on the right side of the left column */
+  }
+  
+  .unitButton {
+    background-color: #02B2AF;
+    color: black !important;
+    font-weight: bold;
+    text-transform: none;
+    padding: 10px;
+    border-radius: 5px;
+    width: 100%;
+    border: 1px solid #a6a2a2 !important; /* Add borders between buttons */
+    margin-bottom: 10px;
+    text-align: left;
+  }
+  
+  .unitButton:hover {
+    background-color: #f1f3f3;
+  }
+  
+  .rightColumn {
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    padding-left: 20px;
+  }
+  
+  .suggestionBox {
+    background-color: #f8f2be;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+  }
+  
+  .suggestionBox p {
+    font-size: 1rem;
+    color: #333;
+  }
+  
+  /* Make sure layout works well on smaller screens */
+  @media (max-width: 768px) {
+    .mainContent {
+      flex-direction: column; /* Stack columns on small screens */
+    }
+  
+    .leftColumn {
+      width: 100%;
+      align-items: center;
+    }
+  
+    .rightColumn {
+      width: 100%;
+      padding-left: 0;
+    }
+  
+    .unitButton {
+      width: auto;
+      margin: 5px 0;
+    }
+  }
+  
