@@ -1,0 +1,135 @@
+a img {
+    width: 300px;
+}
+
+header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.profile a{
+    margin-right: 10px;
+}
+
+a:hover {
+    color: rgb(12, 97, 183);
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none;
+}
+
+.profile-btn {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: black;
+    cursor: pointer;
+}
+
+/* Dropdown Styling */
+.dropdown {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+    visibility: hidden;  
+    opacity: 0;          
+    transform: translateY(-10px); 
+    transition: all 0.3s ease;   
+}
+
+.dropdown.show {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Responsive Styling */
+.small-screen-only {
+    display: none;
+}
+
+.large-screen-only {
+    display: block;
+}
+
+/* Media Query for Small Screens */
+@media (max-width: 768px) {
+    .small-screen-only {
+        display: flex; /* Show button on small screens */
+    }
+
+    .large-screen-only {
+        display: none; /* Hide links on small screens */
+    }.profile-btn {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: black;
+    cursor: pointer;
+}
+
+/* Dropdown Styling */
+.dropdown {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+    visibility: hidden;  
+    opacity: 0;          
+    transform: translateY(-10px); 
+    transition: all 0.3s ease;   
+}
+
+.dropdown.show {
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.small-screen-only {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .small-screen-only {
+        display: block; 
+    }
+
+    .large-screen-only {
+        display: none; 
+    }
+
+    .dropdown {
+        visibility: hidden; 
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    .dropdown.show {
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+    .dropdown {
+        visibility: hidden; /* Ensure dropdown stays hidden initially */
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    .dropdown.show {
+        visibility: visible;
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
