@@ -6,13 +6,18 @@ header {
     display: flex;
     align-items: center;
     width: 100%;
+    background-color: rgb(44, 159, 44) !important;
+    padding: 5px 20px; /* Reduce padding to decrease height */
+    height: 60px; /* Set a fixed height */
+
 }
 
 nav {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    width: 100%;
+    width: 90%;
+    margin-left: 2%;
 }
 
 .profile a{
@@ -56,6 +61,13 @@ a {
 /* Responsive Styling */
 .small-screen-only {
     display: none;
+}
+/* Reduce Logo Size */
+a img {
+    width: 150px; /* Adjust width to make it smaller */
+    height: auto; /* Maintain aspect ratio */
+    margin-left: 10%;
+
 }
 
 .large-screen-only {
@@ -132,4 +144,5 @@ a {
         opacity: 1;
         transform: translateY(0);
     }
+
 }
