@@ -1,4 +1,4 @@
-import KuReviewLogo from "../logo.png";
+import KuReviewLogo from "../logo-kureview.png";
 import { useState, useRef } from "react";
 import styles from "../styles/NavBar.module.css";
 
