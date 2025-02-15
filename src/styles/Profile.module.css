@@ -1,17 +1,22 @@
 /* Profile.module.css */
 .container {
   font-family: 'Nunito', sans-serif;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+  width: 100%; /* Ensures full width */
+  max-width: none; /* Overrides any previous max-width */
+  margin: 0 auto; /* Centers the container */
 }
 
 .flexContainer {
   display: flex;
-  justify-content: space-between; /* Creates two columns */
-  gap: 30px; /* Adds space between columns */
-  flex-wrap: wrap; /* Ensures the content wraps on smaller screens */
+  width: 90%; /* Ensures full width */
+  justify-content: center; /* Center elements */
+  gap: 30px; /* Keep spacing */
+  flex-wrap: wrap; /* Ensures responsiveness */
 }
+.MuiPaper-root {
+  width: 100% !important;
+}
+
 
 .leftColumn {
   flex: 1;
