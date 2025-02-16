@@ -9,18 +9,22 @@ export default function ScorePage() {
         {
             round: 1,
             total: 42, 
-            loop: 5, 
-            condition: 10, 
-            list: 5, 
-            function: 12
+            repetition: 50, 
+            subroutine: 20, 
+            list: 80, 
+            selection: 30,
+            'Sequential Program': 10, 
+            "Numerical Processing": 80
         },
         {
-            round: 2,
-            total: 60, 
-            loop: 18, 
-            condition: 15, 
-            list: 12, 
-            function: 15
+            round: 1,
+            total: 95, 
+            repetition: 80, 
+            subroutine: 85, 
+            list: 100, 
+            selection: 95,
+            'Sequential Program': 90, 
+            "Numerical Processing": 95
         }
     ]
 

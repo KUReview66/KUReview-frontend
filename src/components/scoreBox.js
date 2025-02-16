@@ -2,6 +2,7 @@ import ProgressBar from "./progressBar";
 import style from "../styles/ScoreBox.module.css";
 import "bootstrap-icons/font/bootstrap-icons.css";
 import { useState } from "react";
+import { Link } from 'react-router-dom'
 
 function ScoreBox({ round, score: scores }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -18,7 +19,9 @@ function ScoreBox({ round, score: scores }) {
                 <h5>{textRound} Round</h5>
                 <p>{scores?.total ?? "No score available"} / 100</p>
                 <div className={style["action"]}>
-                    <button className={style["suggest"]}>Suggestion</button>
+                <Link to="/suggest" className={style.suggest}>
+                    <button>Suggestion</button>
+                </Link>
                     <button
                         onClick={toggleDropdown}
                         style={{ background: "transparent", color: "black", margin: "5px" }}
@@ -40,9 +43,9 @@ function ScoreBox({ round, score: scores }) {
                             <div key={key} className={style["score-item"]}>
                                 <div className={style["score-topic"]}>
                                     <p>{key.charAt(0).toUpperCase() + key.slice(1)}</p>
-                                    <p>{value}</p>
+                                    <p>{value}%</p>
                                 </div>
-                                <ProgressBar progress={value} totalPoints={20} />
+                                <ProgressBar progress={value} totalPoints={100} />
                             </div>
                         ))}
                 </div>
