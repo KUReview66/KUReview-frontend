@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button, Typography, Box, CircularProgress } from "@mui/material";
 import Navbar from "../components/navBar"; 
 import styles from "../styles/Suggestion.module.css";
@@ -46,6 +46,44 @@ export default function SuggestionPage() {
   const [selectedUnit, setSelectedUnit] = useState(null); 
   const [suggestion, setSuggestion] = useState("Select a unit to see the learning content.");
   const [loading, setLoading] = useState(false);
+  const [score, setScore] = useState([]);
+  const [error, setError] = useState(null);
+  const studentId = "6410509012";
+
+  useEffect(() => {
+      const fetchScores = async () => {
+          try {
+              const response = await fetch(`http://localhost:3000/student-score/topic-wise/${studentId}`);
+              if (!response.ok) {
+                  throw new Error("Failed to fetch scores");
+              }
+              const data = await response.json();
+  
+              const mergedScores = data.reduce((acc, item) => {
+                  const { round, topicName, totalQuestion, topicScore } = item;
+  
+                  let existingRound = acc.find(entry => entry.round === round);
+                  if (!existingRound) {
+                      existingRound = { round, total: 0, fullScore: 0, topics: {} }; 
+                      acc.push(existingRound);
+                  }
+  
+                  existingRound.topics[topicName] = { topicScore, totalQuestion };
+                  existingRound.total += topicScore;
+                  existingRound.fullScore += totalQuestion;
+                  return acc;
+              }, []);
+  
+              mergedScores.sort((a, b) => a.round - b.round);
+  
+              setScore(mergedScores);
+          } catch (err) {
+              setError(err.message);
+          } 
+      };
+  
+      fetchScores();
+  }, [studentId]);
 
   const fetchSuggestion = async (unit) => {
     setLoading(true);

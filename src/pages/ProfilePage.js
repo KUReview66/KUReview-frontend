@@ -1,37 +1,105 @@
+import { useState, useEffect } from "react";
 import * as React from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import Navbar from "../components/navBar";
-import styles from '../styles/Profile.module.css'; // Assuming you will style your page via CSS
+import styles from '../styles/Profile.module.css'; 
 
 export default function ProfilePage() {
-  const [round, setRound] = React.useState('1st Round');
+  const [round, setRound] = useState(1);  
+  const [score, setScore] = useState([]);
+  const [unit, setUnit] = useState([]);
+  const [unitScore, setUnitScore] = useState([]);
+  const studentId = "6410509012";
+
+  useEffect(() => {
+    const fetchScores = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/student-score/topic-wise/${studentId}`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch scores");
+        }
+        const data = await response.json();
+
+        const mergedScores = data.reduce((acc, item) => {
+          const { round, topicName, totalQuestion, topicScore } = item;
+
+          let existingRound = acc.find(entry => entry.round === round);
+          if (!existingRound) {
+              existingRound = { round, total: 0, fullScore: 0, topics: {} }; 
+              acc.push(existingRound);
+          }
+
+          existingRound.topics[topicName] = { topicScore, totalQuestion };
+          existingRound.total += topicScore;
+          existingRound.fullScore += totalQuestion;
+          return acc;
+      }, []);
+
+        setScore(mergedScores);
+
+        const currentRoundData = mergedScores.find(entry => entry.round === round);
+        if (currentRoundData) {
+          setUnit(Object.keys(currentRoundData.topics));
+          setUnitScore(Object.values(currentRoundData.topics).map(topic => topic.topicScore));
+        }
+        console.log(unit, unitScore);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchScores();
+  }, [round, unit, unitScore]);
 
   const handleRoundChange = (event) => {
-    setRound(event.target.value);
+    const roundText = event.target.value; 
+    const roundNumber = parseInt(roundText); 
+
+    if (isNaN(roundNumber)) {
+      setRound(1);
+      alert(`Invalid round selected: ${roundText}`);
+      return;
+    }
+
+    setRound(roundNumber);
+
+    const currentRoundData = score.find(entry => entry.round === roundNumber);
+    if (!currentRoundData) {
+      alert(`No data available for ${roundText}`);
+      return;
+    }
+
+    setUnit(Object.keys(currentRoundData.topics));
+    setUnitScore(Object.values(currentRoundData.topics).map(topic => topic.topicScore));
   };
+
+  const formatRound = (round) => {
+    if (round === 1) return "1st Round";
+    if (round === 2) return "2nd Round";
+    if (round === 3) return "3rd Round";
+    return `${round}th Round`;
+  };
+  
 
   return (
     <div className={styles.container}>
-      {/* Navbar */}
       <div>
         <Navbar />
       </div>
 
-      {/* Flex Container for Left and Right Columns */}
       <div className={styles.flexContainer}>
-        {/* Left Column */}
         <div className={styles.leftColumn}>
-          {/* Profile Image */}
+
           <div className={styles.profileImage}>
             <img src="/userprofile.png" alt="User Profile" className={styles.profileImg} />
           </div>
-          {/* User Info */}
+
           <div className={styles.userInfo}>
-  <div className={styles.username}>Ploy Preme</div>
-  <div className={styles.userInfoText}>b6410xxxxxx</div>
-  <div className={styles.userInfoText}>Joined February 2024</div>
-</div>
+            <div className={styles.username}>Ploy Preme</div>
+            <div className={styles.userInfoText}>{studentId}</div>
+            <div className={styles.userInfoText}>Joined February 2024</div>
+          </div>
 
 
           {/* Round Selector */}
@@ -43,44 +111,42 @@ export default function ProfilePage() {
                 id="round-select"
                 value={round}
                 onChange={handleRoundChange}
-                label="Round"
               >
-                <MenuItem value={'1st Round'}>1st Round</MenuItem>
-                <MenuItem value={'2nd Round'}>2nd Round</MenuItem>
-                <MenuItem value={'3rd Round'}>3rd Round</MenuItem>
+                {[1, 2, 3].map((r) => (
+                  <MenuItem key={r} value={r}>{formatRound(r)}</MenuItem>
+                ))}
               </Select>
             </FormControl>
           </div>
         </div>
 
-        {/* Right Column */}
         <div className={styles.rightColumn}>
           {/* Bar Chart */}
           <div className={styles.chartSection}>
           <div className={styles.statisticsTitle}>Statistics</div>
           <div className={styles.compareButton}>
-  Score Compare with Average
-</div>
+            Score Compare with Average
+          </div>
           {/* Color Boxes with Labels for Student score and Average */}
           <div className={styles.legend}>
-  <div className={styles.legendItem}>
-    <div className={styles.colorBox} style={{ backgroundColor: '#02B2AF' }}></div>
-    <span>Student score</span>
-  </div>
-  <div className={styles.legendItem}>
-    <div className={styles.colorBox} style={{ backgroundColor: '#2E96FF' }}></div>
-    <span>Average</span>
-  </div>
-</div>
+            <div className={styles.legendItem}>
+              <div className={styles.colorBox} style={{ backgroundColor: '#02B2AF' }}></div>
+              <span>Student score</span>
+            </div>
+            <div className={styles.legendItem}>
+              <div className={styles.colorBox} style={{ backgroundColor: '#2E96FF' }}></div>
+              <span>Average</span>
+            </div>
+          </div>
 
 
             <BarChart
               series={[
-                { data: [35, 44, 24, 34] }, // Student scores
-                { data: [51, 6, 49, 30] },  // Average scores
+                { data: unitScore }, // Student scores
+                { data: [3.5, 3, 4, 2, 3, 1, 0] },  // Average scores
               ]}
               height={290}
-              xAxis={[{ data: ['Loop', 'Condition', 'List', 'Dictionary'], scaleType: 'band' }]}
+              xAxis={[{ data: unit, scaleType: 'band' }]}
               margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
             />
           </div>
@@ -89,12 +155,12 @@ export default function ProfilePage() {
 
           {/* Score Information in Two Columns */}
           <Paper className={styles.scoreInfo}>
-  <div className={styles.scoreText}><strong>Your score:</strong> 42/100</div>
-  <div className={styles.scoreText}><strong>Mean:</strong> 44.42</div>
-  <div className={styles.scoreText}><strong>S.D.:</strong> 12.72</div>
-  <div className={styles.scoreText}><strong>Max:</strong> 77</div>
-  <div className={styles.scoreText}><strong>Min:</strong> 0</div>
-</Paper>
+            <div className={styles.scoreText}><strong>Your score:</strong> 42/100</div>
+            <div className={styles.scoreText}><strong>Mean:</strong> 44.42</div>
+            <div className={styles.scoreText}><strong>S.D.:</strong> 12.72</div>
+            <div className={styles.scoreText}><strong>Max:</strong> 77</div>
+            <div className={styles.scoreText}><strong>Min:</strong> 0</div>
+          </Paper>
 
         </div>
       </div>
