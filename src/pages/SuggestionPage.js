@@ -1,118 +1,126 @@
 import React, { useState, useEffect } from "react";
 import { Button, Typography, Box, CircularProgress } from "@mui/material";
-import Navbar from "../components/navBar"; 
+import Navbar from "../components/navBar";
 import styles from "../styles/Suggestion.module.css";
 import OpenAI from "openai";
 import { OPENAI_API_KEY } from "../config";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
-
-// 📌 Unit-specific videos (7 main units)
-const unitVideos = {
-  "Sequential Program": "path_to_sequential_program_video.mp4",
-  "Subroutine": "path_to_subroutine_video.mp4",
-  "Selection": "path_to_selection_video.mp4",
-  "Repetition": "path_to_repetition_video.mp4",
-  "File Input": "path_to_file_input_video.mp4",
-  "List": "path_to_list_video.mp4",
-  "Numerical Processing": "path_to_numerical_processing_video.mp4",
-};
+import unitVideos from "../data/videodata";
+import unitSubtopics from "../data/unitdata";
 
 // 📌 Fixed Mock Student Scores
 const mockStudentScores = {
-  "Sequential Program": 10, 
-  "Subroutine": 20,
-  "Selection": 30,
-  "Repetition": 50,
+  "Sequential Program": 10,
+  Subroutine: 20,
+  Selection: 30,
+  Repetition: 50,
   "File Input": 50,
-  "List": 80,
+  List: 80,
   "Numerical Processing": 80,
 };
 
-// 📌 Units & Subtopics (AI will include them automatically)
-const unitSubtopics = {
-  "Sequential Program": ["Python Statement", "Arithmetic Expression", "Variable", "Data Types", "Data Type Conversion", "Input Statement", "String Formatting", "Output Statement and Formatting"],
-  "Subroutine": ["Subroutine Concept", "Built-in Functions", "Math Module", "User-defined Function", "Parameter Passing", "Function with Default Parameters", "Value-Returning Function", "Function with Returning Multiple Values", "Composition", "Getting Help in Python", "Local and Global Variables", "Positional and Named Arguments"],
-  "Selection": ["Boolean Operators and Expression", "Flowchart", "If Statement", "If-Else Statement", "Multiple Selection Concept", "Nested Conditions", "Chained Conditions"],
-  "Repetition": ["For Statement", "The range() Function", "While Statement", "Loop and a Half", "Infinite Loop", "Counting Loop", "Sentinel Loop", "Nested Loop"],
-  "File Input": ["Reading a Text File", "Function vs. Method", "List Comprehension", "Nested List"],
-  "List": ["Introduction to Collection", "List Methods", "Operations on List", "Properties of List vs. String", "List Slicing"],
-  "Numerical Processing": ["Numpy with 1D-Array", "Array vs. List", "Reading a Text File using Numpy", "Numpy with 2D-Array"],
-};
-
 export default function SuggestionPage() {
-  const [selectedTab, setSelectedTab] = useState("content"); 
-  const [selectedUnit, setSelectedUnit] = useState(null); 
-  const [suggestion, setSuggestion] = useState("Select a unit to see the learning content.");
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  const [selectedTab, setSelectedTab] = useState("content");
+  const [selectedUnit, setSelectedUnit] = useState(null);
+  const [suggestion, setSuggestion] = useState(
+    "Select a unit to see the learning content."
+  );
   const [loading, setLoading] = useState(false);
   const [score, setScore] = useState([]);
   const [error, setError] = useState(null);
   const studentId = "6410509012";
 
   useEffect(() => {
-      const fetchScores = async () => {
-          try {
-              const response = await fetch(`http://localhost:3000/student-score/topic-wise/${studentId}`);
-              if (!response.ok) {
-                  throw new Error("Failed to fetch scores");
-              }
-              const data = await response.json();
-  
-              const mergedScores = data.reduce((acc, item) => {
-                  const { round, topicName, totalQuestion, topicScore } = item;
-  
-                  let existingRound = acc.find(entry => entry.round === round);
-                  if (!existingRound) {
-                      existingRound = { round, total: 0, fullScore: 0, topics: {} }; 
-                      acc.push(existingRound);
-                  }
-  
-                  existingRound.topics[topicName] = { topicScore, totalQuestion };
-                  existingRound.total += topicScore;
-                  existingRound.fullScore += totalQuestion;
-                  return acc;
-              }, []);
-  
-              mergedScores.sort((a, b) => a.round - b.round);
-  
-              setScore(mergedScores);
-          } catch (err) {
-              setError(err.message);
-          } 
-      };
-  
-      fetchScores();
+    console.log("Updated Video Index:", currentVideoIndex);
+    console.log("Now Playing:", unitVideos[selectedUnit]?.[currentVideoIndex]);
+  }, [currentVideoIndex]);
+
+  useEffect(() => {
+    const fetchScores = async () => {
+      try {
+        const response = await fetch(
+          `http://localhost:3000/student-score/topic-wise/${studentId}`
+        );
+        if (!response.ok) {
+          throw new Error("Failed to fetch scores");
+        }
+        const data = await response.json();
+
+        const mergedScores = data.reduce((acc, item) => {
+          const { round, topicName, totalQuestion, topicScore } = item;
+
+          let existingRound = acc.find((entry) => entry.round === round);
+          if (!existingRound) {
+            existingRound = { round, total: 0, fullScore: 0, topics: {} };
+            acc.push(existingRound);
+          }
+
+          existingRound.topics[topicName] = { topicScore, totalQuestion };
+          existingRound.total += topicScore;
+          existingRound.fullScore += totalQuestion;
+          return acc;
+        }, []);
+
+        mergedScores.sort((a, b) => a.round - b.round);
+
+        setScore(mergedScores);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
+    fetchScores();
   }, [studentId]);
 
   const fetchSuggestion = async (unit) => {
     setLoading(true);
     setSelectedUnit(unit);
     const studentScore = mockStudentScores[unit]; // Use fixed mock score
-    console.log(`Mock student score for ${unit}:`, studentScore); 
+    console.log(`Mock student score for ${unit}:`, studentScore);
     setSuggestion("⏳ Generating content...");
+    setCurrentVideoIndex(0);
+    console.log(`Unit Selected: ${unit}`);
+    console.log(`Total Videos for ${unit}:`, unitVideos[unit]?.length);
 
-    let difficultyLevel = studentScore <= 30 ? "easy, medium, and hard" : studentScore <= 60 ? "medium and hard" : "hard";
-    let exerciseCount = studentScore <= 30 ? "many" : studentScore <= 60 ? "some" : "few";
+    let difficultyLevel =
+      studentScore <= 30
+        ? "easy, medium, and hard"
+        : studentScore <= 60
+        ? "medium and hard"
+        : "hard";
+    let exerciseCount =
+      studentScore <= 30 ? "many" : studentScore <= 60 ? "some" : "few";
 
     // Get subtopics for the selected unit
     let subtopics = unitSubtopics[unit].join(", ");
 
     if (!OPENAI_API_KEY) {
-      setSuggestion("⚠️ Error: Missing API key. Please check your configuration.");
+      setSuggestion(
+        "⚠️ Error: Missing API key. Please check your configuration."
+      );
       setLoading(false);
       return;
     }
 
-    const openai = new OpenAI({ apiKey: OPENAI_API_KEY, dangerouslyAllowBrowser: true });
+    const openai = new OpenAI({
+      apiKey: OPENAI_API_KEY,
+      dangerouslyAllowBrowser: true,
+    });
 
     try {
       const response = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [
-          { role: "system", content: "You are an AI tutor creating structured learning materials for Python students." },
-          { 
-            role: "user", 
+          {
+            role: "system",
+            content:
+              "You are an AI tutor creating structured learning materials for Python students.",
+          },
+          {
+            role: "user",
             content: `The student scored ${studentScore}/100 in '${unit}'.
             Suggest content covering **${difficultyLevel}** difficulty levels. 
             Include all the following subtopics: **${subtopics}**.
@@ -125,16 +133,18 @@ export default function SuggestionPage() {
             5. **Try It Online**: Provide a link to an online Python practice exercise.
 
 
-            Use Markdown formatting with properly formatted code blocks (\`\`\`python ... \`\`\`).`
-          }
+            Use Markdown formatting with properly formatted code blocks (\`\`\`python ... \`\`\`).`,
+          },
         ],
-        max_tokens: 2000, 
+        max_tokens: 2000,
       });
 
       setSuggestion(response.choices[0].message.content);
     } catch (error) {
       console.error("Error fetching content:", error);
-      setSuggestion("⚠️ Error: Unable to generate learning content. Please try again later.");
+      setSuggestion(
+        "⚠️ Error: Unable to generate learning content. Please try again later."
+      );
     }
     setLoading(false);
   };
@@ -150,7 +160,9 @@ export default function SuggestionPage() {
               <Button
                 key={unit}
                 onClick={() => fetchSuggestion(unit)}
-                className={`${styles.unitButton} ${selectedUnit === unit ? styles.activeUnit : ""}`}
+                className={`${styles.unitButton} ${
+                  selectedUnit === unit ? styles.activeUnit : ""
+                }`}
               >
                 {`Unit ${index + 1}: ${unit}`}
               </Button>
@@ -160,17 +172,21 @@ export default function SuggestionPage() {
 
         {/* 🔹 Tabs: Content & Video */}
         <div className={styles.tabContainer}>
-          <button 
-            className={`${styles.tab} ${selectedTab === "content" ? styles.activeTab : ""}`} 
+          <button
+            className={`${styles.tab} ${
+              selectedTab === "content" ? styles.activeTab : ""
+            }`}
             onClick={() => setSelectedTab("content")}
-            disabled={!selectedUnit} 
+            disabled={!selectedUnit}
           >
             Content Suggestion
           </button>
-          <button 
-            className={`${styles.tab} ${selectedTab === "video" ? styles.activeTab : ""}`} 
+          <button
+            className={`${styles.tab} ${
+              selectedTab === "video" ? styles.activeTab : ""
+            }`}
             onClick={() => setSelectedTab("video")}
-            disabled={!selectedUnit} 
+            disabled={!selectedUnit}
           >
             KU Video
           </button>
@@ -186,7 +202,11 @@ export default function SuggestionPage() {
                 components={{
                   code({ node, inline, className, children, ...props }) {
                     return !inline ? (
-                      <SyntaxHighlighter style={vscDarkPlus} language="python" {...props}>
+                      <SyntaxHighlighter
+                        style={vscDarkPlus}
+                        language="python"
+                        {...props}
+                      >
                         {String(children).replace(/\n$/, "")}
                       </SyntaxHighlighter>
                     ) : (
@@ -194,17 +214,82 @@ export default function SuggestionPage() {
                         {children}
                       </code>
                     );
-                  }
+                  },
                 }}
               />
             </Box>
           ) : (
             <div className={styles.videoContainer}>
               <Typography variant="h6">{selectedUnit} Video</Typography>
-              <video width="80%" controls>
-                <source src={unitVideos[selectedUnit]} type="video/mp4" />
-                Your browser does not support the video tag.
-              </video>
+
+              {/* 🔹 Get current video object */}
+              {unitVideos[selectedUnit] &&
+                unitVideos[selectedUnit][currentVideoIndex] && (
+                  <>
+                    <Typography
+                      variant="subtitle1"
+                      className={styles.videoTitle}
+                    >
+                      {unitVideos[selectedUnit][currentVideoIndex].title}
+                    </Typography>
+
+                    {/* 🔹 Render YouTube Videos as <iframe> */}
+                    {unitVideos[selectedUnit][currentVideoIndex].type ===
+                    "youtube" ? (
+                      <iframe
+                        width="80%"
+                        height="400"
+                        src={`https://www.youtube.com/embed/${unitVideos[selectedUnit][currentVideoIndex].url}`}
+                        title={
+                          unitVideos[selectedUnit][currentVideoIndex].title
+                        }
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      ></iframe>
+                    ) : (
+                      /* 🔹 Render MP4 Videos as <video> */
+                      <video key={currentVideoIndex} width="80%" controls>
+                        <source
+                          src={unitVideos[selectedUnit][currentVideoIndex].url}
+                          type="video/mp4"
+                        />
+                        Your browser does not support the video tag.
+                      </video>
+                    )}
+
+                    {/* 🔹 Video Navigation */}
+                    <div className={styles.videoNavigation}>
+                      <Button
+                        onClick={() =>
+                          setCurrentVideoIndex((prev) => Math.max(prev - 1, 0))
+                        }
+                        disabled={currentVideoIndex === 0}
+                        className={styles.navButton}
+                      >
+                        ⬅️ Previous
+                      </Button>
+
+                      <Button
+                        onClick={() =>
+                          setCurrentVideoIndex((prev) =>
+                            Math.min(
+                              prev + 1,
+                              unitVideos[selectedUnit]?.length - 1
+                            )
+                          )
+                        }
+                        disabled={
+                          currentVideoIndex >=
+                          unitVideos[selectedUnit]?.length - 1
+                        }
+                        className={styles.navButton}
+                      >
+                        Next ➡️
+                      </Button>
+                    </div>
+                  </>
+                )}
             </div>
           )}
         </div>

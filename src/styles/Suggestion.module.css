@@ -111,6 +111,25 @@ video {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
   max-width: 100%;
 }
+.videoNavigation {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;  /* Moves buttons below the video */
+}
+
+.navButton {
+  background-color: #f4f4f4;
+  color: black;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+.navButton:hover {
+  background-color: #ddd;
+}
+
 
 /* 📱 Responsive Design */
 @media (max-width: 768px) {
