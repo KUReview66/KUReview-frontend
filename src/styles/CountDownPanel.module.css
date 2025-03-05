@@ -1,3 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+p {
+    text-align: center;
+    font-family: "Nunito", sans-serif;
+}
+
 .time-display-container {
     display: flex;
     justify-content: center;
@@ -5,25 +12,21 @@
 }
 
 .countdown-display {
-    margin-top: 2rem;
     display: flex;
     justify-content: space-evenly;
-    border-radius: 15px;
-    background: rgb(56,67,193);
-    background: linear-gradient(90deg, rgba(56,67,193,1) 0%, rgba(0,212,255,1) 100%);
 }
 
 .countdown-value {
     display: grid;
     place-items: center;
     padding: 1rem;
-    color: white;
+    color: #09451B;
 }
 
 .time{
-    font-size: 50px;
-    font-weight: bolder;
+    font-size: 128px;
     margin: 0;
+    margin-right: 3rem;
 }
 
 span {
@@ -41,7 +44,10 @@ span {
     justify-content: center;
 }
 
-.line-center {
-    border: 2px solid black;
-    width: 80px;
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    margin-top: 8rem;
 }

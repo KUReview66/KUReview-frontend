@@ -1,47 +1,39 @@
-import KuReviewLogo from "../logo-kureview.png";
-import { useState, useRef } from "react";
+import KuReviewLogo from "../logo-white.png";
+import lightBulb from '../idea-48.png';
 import styles from "../styles/NavBar.module.css";
 
 export default function Navbar() {
-    const navRef = useRef();
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-
-    const toggleDropdown = () => {
-        setIsDropdownOpen((prev) => !prev);
-    };
 
     return (
-        <header>
-        <a href="/score" style={{ marginLeft: '-30px' }}>
-            <img src={KuReviewLogo} alt="logo" />
-        </a>
-        <nav ref={navRef}>
-            <a href="/suggest">Suggestion</a>
-
-            <div className={`${styles["profile"]} ${styles["large-screen-only"]}`}>
-                <a href="/profile">Profile</a>
-                <a href="/">Logout</a>
+        <>
+        <div className={styles['nav-container']}>
+            <div className={styles['nav-item']}>
+                <a href="/score" >
+                    <img src={KuReviewLogo} alt="logo" />
+                </a>
+                <a href="/profile">
+                    <div className={styles['name-icon']}>
+                        <img src="https://cdn-icons-png.flaticon.com/512/12828/12828286.png" alt="profile-icon"/>
+                        <p>Profile</p>
+                    </div>
+                </a>
+                <a href="/suggest">
+                    <div className={styles['name-icon']}>
+                        <img src={lightBulb} alt="lightbulb-icon"/>
+                        <p>Study</p>
+                    </div>
+                </a>
             </div>
-
-            <div className={`${styles["profile"]} ${styles["small-screen-only"]}`}>
-                <button 
-                    className={styles["profile-btn"]} 
-                    onClick={toggleDropdown} 
-                    style={{ background: 'transparent', border: 'none', cursor: 'pointer', marginTop: '3rem' }}
-                >
-                    <img src="https://cdn-icons-png.flaticon.com/512/8847/8847419.png" alt="profile-logo" style={{width: '30px'}}/>
-                    <i 
-                    className={`bi ${isDropdownOpen ? 'bi-chevron-up' : 'bi-chevron-down'}`} 
-                    style={{ marginLeft: '5px' }}
-                    ></i>
-                </button>
-
-                <div className={`${styles.dropdown} ${isDropdownOpen ? styles.show : ''}`}>
-                    <a href="/profile">View Profile</a>
-                    <a href="/">Log Out</a>
-                </div>
+            <div className={styles["spacer"]}></div>
+            <div className={styles['nav-item']}>
+                <a href="/">
+                    <div className={styles['name-icon']}>
+                        <img src="https://images.freeimages.com/clg/images/26/261833/white-clarity-shutdown-icon_f?h=350" alt="logout-logo"/>
+                        <p>Logout</p>
+                    </div>
+                </a>
             </div>
-        </nav>
-        </header>
+        </div>
+        </>
     );
 }

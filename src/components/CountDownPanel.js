@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import ReactLoading from 'react-loading';
+import { BlinkBlur } from "react-loading-indicators";
 import styles from '../styles/CountDownPanel.module.css';
 
 const CountdownTimer = () => {
@@ -46,45 +48,45 @@ const CountdownTimer = () => {
         const days = Math.floor(time / (1000 * 60 * 60 * 24));
 
         return (
-            <div className={styles["countdown-display"]}>
-                <div className={styles["countdown-value"]}>
-                    <p className={styles["time"]}>{days.toString().padStart(2, "0")} </p>
-                    <span>DAYS</span>
+            <div className={styles['countdown-display-ctn']}>
+                <div className={styles["countdown-display"]}>
+                    <div className={styles["countdown-value"]}>
+                        <p className={styles["time"]} style={{fontWeight: '1000'}}>{days.toString().padStart(2, "0")} </p>
+                        <span style={{color: '#838383', fontWeight: '800'}}>DAYS</span>
+                    </div>
+                    <div className={styles["countdown-value"]}>
+                        <p className={styles["time"]} style={{fontWeight: '1000'}}>{hours.toString().padStart(2, "0")} </p>
+                        <span style={{color: '#838383', fontWeight: '800'}}>HOURS</span>
+                    </div>
+                    <div className={styles["countdown-value"]}>
+                        <p className={styles["time"]} style={{fontWeight: '1000'}}>{minutes.toString().padStart(2, "0")} </p>
+                        <span style={{color: '#838383', fontWeight: '800'}}>MINUTES</span>
+                    </div>
+                    <div className={styles["countdown-value"]}>
+                        <p className={styles["time"]} style={{fontWeight: '1000'}}>{seconds.toString().padStart(2, "0")} </p>
+                        <span style={{color: '#838383', fontWeight: '800'}}>SECONDS</span>
+                    </div>
                 </div>
-                <div className={styles["countdown-value"]}>
-                    <p className={styles["time"]}>{hours.toString().padStart(2, "0")} </p>
-                    <span>HOURS</span>
-                </div>
-                <div className={styles["countdown-value"]}>
-                    <p className={styles["time"]}>{minutes.toString().padStart(2, "0")} </p>
-                    <span>MINUTES</span>
-                </div>
-                <div className={styles["countdown-value"]}>
-                    <p className={styles["time"]}>{seconds.toString().padStart(2, "0")} </p>
-                    <span>SECONDS</span>
-                </div>
+                <p className={styles["countdown-date"]}>
+                {formatDate(data.eventDate)}  {extractTime(data.eventDate)}
+            </p>
             </div>
         );
     };
 
     return (
         <div className={styles["countdown-timer-container"]}>
-            <h2 className={styles["countdown-name"]}>
-                {data.eventName}
-            </h2>
-            <p className={styles["countdown-date"]}>
-                {formatDate(data.eventDate)} | {extractTime(data.eventDate)}
-            </p>
-            <div className={styles["line-container"]}>
-                <div className={styles["line-center"]}></div>
-            </div>
-
             {timeRemaining > 0 ? (
-                <div className={styles["time-display-container"]}>
-                    {formatTime(timeRemaining)}
-                </div>
+                <>
+                    <p style={{marginBottom: '0', fontWeight: 'normal'}}>Your next exam round is in</p>
+                    <div className={styles["time-display-container"]}>
+                        {formatTime(timeRemaining)}
+                    </div>
+                </>
             ) : (
-                <p>Loading...</p>
+                <div className={styles["loading"]}>
+                    <BlinkBlur color="#09451B" size="large" text="" textColor="" />
+                </div>
             )}
         </div>
     );

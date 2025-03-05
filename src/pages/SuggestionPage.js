@@ -150,7 +150,7 @@ export default function SuggestionPage() {
   };
 
   return (
-    <div>
+    <div style={{display: 'flex'}}>
       <Navbar />
       <div className={styles.container}>
         <div className={styles.unitSection}>

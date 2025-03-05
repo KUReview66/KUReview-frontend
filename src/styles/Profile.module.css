@@ -1,17 +1,16 @@
 /* Profile.module.css */
 .container {
   font-family: 'Nunito', sans-serif;
-  width: 100%; /* Ensures full width */
-  max-width: none; /* Overrides any previous max-width */
-  margin: 0 auto; /* Centers the container */
+  display: flex;
 }
 
 .flexContainer {
   display: flex;
-  width: 90%; /* Ensures full width */
-  justify-content: center; /* Center elements */
-  gap: 30px; /* Keep spacing */
-  flex-wrap: wrap; /* Ensures responsiveness */
+  justify-content: center; 
+  flex-wrap: wrap; 
+  width: 83%;
+  margin-top: 3rem;
+  margin-left: 0;
 }
 .MuiPaper-root {
   width: 100% !important;

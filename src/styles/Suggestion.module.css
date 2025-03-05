@@ -1,23 +1,12 @@
-/* 🔹 Navbar Styling */
-.navbar {
-  width: 100%;
-  background-color: #02B2AF;
-  padding: 15px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  position: fixed;
-  top: 0;
-  left: 0;
-  z-index: 1000;
-}
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
 
-/* 🔹 Page Layout */
 .container {
   font-family: 'Nunito' !important;
   max-width: 1500px;
-  margin: 10px auto;
-  padding: 20px;
+  width: 83%;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 3rem;
 }
 
 /* 🔹 Unit Section */
@@ -94,7 +83,6 @@
   padding: 20px;
   border-radius: 8px;
   border-left: 6px solid #02B2AF;
-  width: 100%;
 }
 
 
