@@ -1,12 +1,32 @@
+import { useState } from 'react';
 import KuReviewLogo from '../logo.png';
 import styles from '../styles/Login.module.css';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 function LogInPage() {
-    const navigate = useNavigate();
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('')
+    const navigate = useNavigate();    
 
-    const handleLogin = () => {
-        navigate('score');
+    const handleLogin = async (e) => {
+        e.preventDefault();
+
+        const loginData = {
+            username: username, 
+            password: password
+        }
+
+        console.log(loginData)
+
+        try {
+            const response = await axios.post('http://localhost:3000/login', loginData);
+            localStorage.setItem('username', username);
+            navigate(`score/${username}`);
+        } catch (err) {
+            console.error(err)
+            alert('Invalid login detail')
+        }
     }
 
     return (
@@ -16,11 +36,11 @@ function LogInPage() {
                 <form>
                     <div className={styles['input-ctn']}>
                         <label htmlFor="username">Username</label>
-                        <input id="username" type="text" placeholder="Username" required />
+                        <input id="username" type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
                     </div>
                     <div className={styles['input-ctn']}>
                         <label htmlFor="password">Password</label>
-                        <input id="password" type="password" placeholder="Password" required />
+                        <input id="password" type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
                     </div>
                     <p className={styles['header']}>*Login with your nontri account</p>
                     <button type="submit" className={styles['login-button']} onClick={handleLogin}>

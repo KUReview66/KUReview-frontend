@@ -83,8 +83,10 @@ export default function ProfilePage() {
   
 
   return (
-    <div className={styles.container} >
+    <div className={styles.container}>
+      <div>
         <Navbar />
+      </div>
 
       <div className={styles.flexContainer}>
         <div className={styles.leftColumn}>

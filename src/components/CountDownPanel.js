@@ -1,12 +1,10 @@
 import React, { useState, useEffect } from "react";
-import ReactLoading from 'react-loading';
 import { BlinkBlur } from "react-loading-indicators";
 import styles from '../styles/CountDownPanel.module.css';
 
-const CountdownTimer = () => {
+const CountdownTimer = ({date}) => {
     const data = {
-        eventName: "Exam round 3",
-        eventDate: "2025-05-15T13:00:00"
+        eventDate: date
     };
 
     const [timeRemaining, setTimeRemaining] = useState(0);

@@ -9,7 +9,7 @@ p {
 }
 
 a {
-    color: white;
+    color: white !important;
 }
 
 .nav-container {
@@ -59,7 +59,7 @@ a:hover {
 }
 
 a {
-    text-decoration: none;
+    text-decoration: none !important;
 }
 
 a:visited {

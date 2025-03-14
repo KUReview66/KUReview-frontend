@@ -11,13 +11,13 @@ function ScoreBox({ round, score: scores }) {
         setIsOpen((prev) => !prev);
     };
 
-    const textRound = round === 1 ? "1st" : round === 2 ? "2nd" : round === 3 ? "3rd" : `${round}th`;
+    const textRound = round === 'comproExamR1' ? "1st" : round === 'comproExamR2' ? "2nd" : round === 'comproExamR3' ? "3rd" : `${round}th`;
 
     return (
         <div className={style["container"]}>
             <div className={style["score-header"]}>
                 <h5>{textRound} Round</h5>
-                <p>{scores?.total ?? "No score available"} / {scores.fullScore}</p>
+                <p>{scores?.totalScore ?? "No score available"} / {scores.totalQuestions}</p>
                 <div className={style["action"]}>
                 <Link to="/suggest" className={style.suggest}>
                     <button>Suggestion</button>
@@ -37,17 +37,16 @@ function ScoreBox({ round, score: scores }) {
 
             {isOpen && scores && (
                 <div className={style["score"]}>
-                    {Object.entries(scores.topics).map(([topic, { topicScore, totalQuestion }]) => (
-                        <div key={topic} className={style["score-item"]}>
-                            <div className={style["score-topic"]}>
-                                <p>{topic}</p>
-                                <p>{topicScore} / {totalQuestion}</p>
-                            </div>
-                            <ProgressBar progress={topicScore} totalPoints={totalQuestion} />
+                {scores.scoreDetails.map(({ topicName, topicScore, totalQuestions }) => (
+                    <div key={topicName} className={style["score-item"]}>
+                        <div className={style["score-topic"]}>
+                            <p>{topicName}</p>
+                            <p>{topicScore} / {totalQuestions}</p>
                         </div>
-                    ))}
-
-                </div>
+                        <ProgressBar progress={topicScore} totalPoints={totalQuestions} />
+                    </div>
+                ))}
+            </div>
             )}
         </div>
     );
