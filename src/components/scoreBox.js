@@ -4,7 +4,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import { useState } from "react";
 import { Link } from 'react-router-dom'
 
-function ScoreBox({ round, score: scores }) {
+function ScoreBox({ round, score: scores, username}) {
     const [isOpen, setIsOpen] = useState(false);
 
     const toggleDropdown = () => {
@@ -19,8 +19,8 @@ function ScoreBox({ round, score: scores }) {
                 <h5>{textRound} Round</h5>
                 <p>{scores?.totalScore ?? "No score available"} / {scores.totalQuestions}</p>
                 <div className={style["action"]}>
-                <Link to="/suggest" className={style.suggest}>
-                    <button>Suggestion</button>
+                <Link to={`/suggest/${username}/${round}`} className={style.suggest}>
+                <button>Suggestion</button>
                 </Link>
                     <button
                         onClick={toggleDropdown}

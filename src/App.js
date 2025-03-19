@@ -12,7 +12,7 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/profile/:username" element={<ProfilePage />} /> 
-        <Route path="/suggest" element={<SuggestionPage />} /> 
+        <Route path="/suggest/:username/:round" element={<SuggestionPage />} /> 
         <Route path="/pre-exam-suggestion" element={<PreExamSuggest />}/>
         <Route path="/" element={<LogInPage />} /> 
         <Route path="/score/:username" element={<ScorePage />} /> 

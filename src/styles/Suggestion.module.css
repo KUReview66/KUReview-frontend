@@ -20,7 +20,15 @@
   font-weight: bold !important;
   margin-bottom: 10px !important;
 }
+.unitPrompt{
+  margin-top: 50px !important;
+  font-size: 20px !important;
+  text-align: center;
+  font-weight: bold !important;
 
+
+
+}
 /* 🔹 Unit Buttons */
 .unitButtonsContainer {
   display: flex;
@@ -79,16 +87,16 @@
 
 /* 🔹 Content Box */
 .suggestionBox {
-  background-color: #fffdf1;
+  background-color: #f8f8f8;
   padding: 20px;
   border-radius: 8px;
-  border-left: 6px solid #02B2AF;
+  border-left: 6px solid #0a451b;
 }
 
 
 /* 🔹 Video Section */
 .videoContainer {
-  background-color: #fffdf1;
+  background-color: #f8f8f8;
   padding: 20px;
   border-radius: 8px;
   text-align: center;
@@ -144,4 +152,118 @@ video {
   .tabContainer {
     justify-content: center;
   }
+}
+
+.suggestionBox p {
+  text-align: left !important;
+  font-family: 'Nunito' !important;
+}
+
+
+/* Quiz */
+.quizBox {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: left;  /* Aligns everything inside to the left */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;  /* Ensures everything is aligned to the left */
+}
+
+.quizTitle {
+  font-family: 'Nunito' !important;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.quizQuestion {
+  font-family: 'Nunito' !important;
+  font-size: 1.1em;
+  margin-bottom: 15px;
+  text-align: left; /* Ensures the question text is left-aligned */
+}
+
+.quizOptions {
+  font-family: 'Nunito' !important;
+  display: flex !important;
+  flex-direction: column !important;
+  text-align: left !important;
+  gap: 10px !important; 
+  width: 100% !important; /* Ensures buttons take full width */
+}
+
+.quizButton {
+  width: 100% !important;
+  text-align: left !important;
+  padding: 12px !important;
+  font-size: 1rem !important;
+  border: 1px solid #ddd !important;
+  background-color: #f8f9fa !important;
+  transition: all 0.2s ease-in-out !important;
+  display: block !important;
+}
+
+.quizButton:hover {
+  background-color: #e2e6ea;
+}
+/* next page */
+
+.subtopicNavContainer {
+  display: flex;
+  justify-content: center; /* Center the buttons */
+  align-items: center;
+  margin-top: 20px;
+}
+
+.navButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 50px;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #fff;
+  color: #4a4a4a;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.navButton:disabled {
+  color: #b0b0b0;
+  cursor: not-allowed;
+  background-color: #f5f5f5;
+}
+
+.navButton:hover:not(:disabled) {
+  background-color: #f0f0f0;
+}
+
+.prevButton {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  color: #15602b;
+}
+
+.nextButton {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-left: none;
+  background-color:#15602b;
+  color: #ffffff;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 150px; /* Adjust height based on layout */
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
 }

@@ -1,5 +1,5 @@
 const unitVideos = {
-  "Sequential Program": [
+  "02-Basic": [
     { title: "Python Statement", url: "https://mike.cpe.ku.ac.th/un/01204111_clips/05-Python Statement.mp4?1739891974758", type: "mp4"},
     { title: "Arithmetic Expression", url: "https://mike.cpe.ku.ac.th/un/01204111_clips/06-Arithmetic Expression.mp4?1739892370520", type: "mp4" },
     { title: "Variable", url: "https://mike.cpe.ku.ac.th/un/01204111_clips/07-Variable.mp4?1739895023235", type: "mp4" },
@@ -10,7 +10,7 @@ const unitVideos = {
     { title: "Output Statement and Formatting", url: "https://mike.cpe.ku.ac.th/un/01204111_clips/12-Output Statement and Formatting.mp4?1739895174839", type: "mp4" },
   ],
   
-  "Subroutine": [
+  "03-Subroutine": [
     { title: "Subroutine Concept", url: "https://mike.cpe.ku.ac.th/un/01204111_clips/13-Subroutine Concept.mp4?1739895383937", type: "mp4" },
     { title: "Built-in Functions in Python", url: "https://mike.cpe.ku.ac.th/un/01204111_clips/14-Built-in Functions in Python.mp4?1739895439045", type: "mp4" },
     { title: "Math Module", url: "https://mike.cpe.ku.ac.th/un/01204111_clips/15-Math Module.mp4?1739895458189", type: "mp4" },
@@ -33,7 +33,7 @@ const unitVideos = {
 
   ],
 
-  "Selection": [
+  "05-Selection": [
     { title: "Boolean Operators and Expression", url: "vJUiEe1He5s", type:"youtube"},
     { title: "Flowchart", url: "-zYp2AtB2B0", type:"youtube"},
     { title: "If Statement", url: "5Dj4F7b7rc0" , type:"youtube"},
@@ -48,7 +48,7 @@ const unitVideos = {
 
   ],
 
-  "Repetition": [
+  "06-Repetition": [
 	// I
 	{ title: "for Statement", url: "F2VcQnTDAPY", type: "youtube"},
 	{ title: "The range() Function", url: "urhpIihO_48", type: "youtube"},
@@ -77,17 +77,7 @@ const unitVideos = {
 	{ title: "Nested Loop", url: "z2HIb1eLyIE", type: "youtube"},
 	{ title: "Nested Loop Example", url: "Apy2Lts2xyk", type: "youtube"},
   ],
-
-  "File Input": [
-    { title: "Reading a Text File", url: "TPzw3IwopC0",type:"youtube"},
-    { title: "Function vs. Method", url: "9JLpnLxGLzU", type:"youtube"},
-    { title: "List Comprehension", url: "lbQckCTc7bk", type:"youtube"},
-	{ title: "List Complehnsion Example", url: "a7HU1D1NCJY", type:"youtube"},
-    { title: "Nested List", url: "fS95IGXF8Os", type:"youtube"},
-	{ title: "Nested List Example", url: "5I-zGBx_qYg", type:"youtube"}
-  ],
-
-  "List": [
+  "07-List": [
     { title: "Introduction to Collection", url: "yPIY2DTjb4s", type:"youtube" },
 	{ title: "List", url: "vtIcs4-pxyk", type:"youtube"}, 
 	{ title: "List Example", url: "Sh5nWPqZxZ4", type: "youtube"}, 
@@ -99,7 +89,17 @@ const unitVideos = {
     { title: "List Slicing", url: "Mz-gIg5dUlY", type:"youtube" },
   ],
 
-  "Numerical Processing": [
+  "08-File": [
+    { title: "Reading a Text File", url: "TPzw3IwopC0",type:"youtube"},
+    { title: "Function vs. Method", url: "9JLpnLxGLzU", type:"youtube"},
+    { title: "List Comprehension", url: "lbQckCTc7bk", type:"youtube"},
+	{ title: "List Complehnsion Example", url: "a7HU1D1NCJY", type:"youtube"},
+    { title: "Nested List", url: "fS95IGXF8Os", type:"youtube"},
+	{ title: "Nested List Example", url: "5I-zGBx_qYg", type:"youtube"}
+  ],
+
+
+  "09-Numpy": [
     { title: "Numpy with 1D-Array", url: "fWaweo4OYw0", type: "youtube"},
     { title: "Array vs. List", url: "G4N7uOQtjrs", type: "youtube"},
     { title: "Reading a Text File using Numpy", url: "BXjhU70Wzv4",type: "youtube"},

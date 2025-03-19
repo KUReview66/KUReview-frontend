@@ -1,5 +1,5 @@
 const unitSubtopics = {
-    "Sequential Program": [
+    "02-Basic": [
       "Python Statement",
       "Arithmetic Expression",
       "Variable",
@@ -9,7 +9,7 @@ const unitSubtopics = {
       "String Formatting",
       "Output Statement and Formatting",
     ],
-    Subroutine: [
+    "03-Subroutine": [
       "Subroutine Concept",
       "Built-in Functions",
       "Math Module",
@@ -23,7 +23,7 @@ const unitSubtopics = {
       "Local and Global Variables",
       "Positional and Named Arguments",
     ],
-    Selection: [
+    "05-Selection": [
       "Boolean Operators and Expression",
       "Flowchart",
       "If Statement",
@@ -32,7 +32,7 @@ const unitSubtopics = {
       "Nested Conditions",
       "Chained Conditions",
     ],
-    Repetition: [
+    "06-Repetition": [
       "For Statement",
       "The range() Function",
       "While Statement",
@@ -42,20 +42,20 @@ const unitSubtopics = {
       "Sentinel Loop",
       "Nested Loop",
     ],
-    "File Input": [
-      "Reading a Text File",
-      "Function vs. Method",
-      "List Comprehension",
-      "Nested List",
-    ],
-    List: [
+   "07-List" : [
       "Introduction to Collection",
       "List Methods",
       "Operations on List",
       "Properties of List vs. String",
       "List Slicing",
     ],
-    "Numerical Processing": [
+    "08-File": [
+      "Reading a Text File",
+      "Function vs. Method",
+      "List Comprehension",
+      "Nested List",
+    ],
+    "09-Numpy": [
       "Numpy with 1D-Array",
       "Array vs. List",
       "Reading a Text File using Numpy",

@@ -108,7 +108,7 @@ export default function ScorePage() {
                         </div>
                         <div className="score-box">
                             {score.map(((item, index) => (
-                                <ScoreBox key={index} round={item.round} score={item}></ScoreBox>
+                                <ScoreBox key={index} round={item.round} score={item} username={username} />
                             )))}
                         </div>
                     </div>
