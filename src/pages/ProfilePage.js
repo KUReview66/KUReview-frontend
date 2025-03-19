@@ -15,35 +15,48 @@ export default function ProfilePage() {
   useEffect(() => {
     const fetchScores = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/student-score/topic-wise/${studentId}`);
+        const response = await fetch(`http://localhost:3000/student-score/topic-wise/b6410545509`);
         if (!response.ok) {
           throw new Error("Failed to fetch scores");
         }
         const data = await response.json();
 
-        const mergedScores = data.reduce((acc, item) => {
-          const { round, topicName, totalQuestion, topicScore } = item;
+        const processedRounds = data.map(round => {
+          const { scheduleName, SectionData} = round;
 
-          let existingRound = acc.find(entry => entry.round === round);
-          if (!existingRound) {
-              existingRound = { round, total: 0, fullScore: 0, topics: {} }; 
-              acc.push(existingRound);
-          }
+        let totalScore = 0;
+        let totalQuestions = 0;
+        const topics = [];
 
-          existingRound.topics[topicName] = { topicScore, totalQuestion };
-          existingRound.total += topicScore;
-          existingRound.fullScore += totalQuestion;
-          return acc;
-      }, []);
+        Object.values(SectionData).forEach(section => {
+            const { scoreDetail, maxScore } = section;
 
-        setScore(mergedScores);
+            totalQuestions += maxScore;
+            
+            Object.entries(scoreDetail).forEach(([topicKey, topicValue]) => {
+                topics.push({
+                    topicName: topicValue.topicName,
+                    topicScore: topicValue.topicScore,
+                    totalQuestions: topicValue.totalQuestions
+                });
 
-        const currentRoundData = mergedScores.find(entry => entry.round === round);
-        if (currentRoundData) {
-          setUnit(Object.keys(currentRoundData.topics));
-          setUnitScore(Object.values(currentRoundData.topics).map(topic => topic.topicScore));
-        }
-        console.log(unit, unitScore);
+                totalScore += topicValue.topicScore;
+            });
+        });
+
+        return {
+            round: scheduleName,    
+            totalScore: totalScore, 
+            totalQuestions: totalQuestions, 
+            scoreDetails: topics    
+        };
+        });
+
+        console.log(processedRounds);
+        setScore(processedRounds)
+
+        const currentRoundData = processedRounds.find(entry => entry.round === round);
+        console.log(currentRoundData)
       } catch (err) {
         console.error(err);
       }

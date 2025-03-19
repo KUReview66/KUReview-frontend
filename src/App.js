@@ -5,13 +5,15 @@ import SuggestionPage from "./pages/SuggestionPage";
 import LogInPage from './pages/LoginPage'; 
 import ScorePage from './pages/ScorePage'; 
 import NotFound from "./pages/NotFound";
+import PreExamSuggest from "./pages/PreExamSuggest";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/profile" element={<ProfilePage />} /> 
+        <Route path="/profile/:username" element={<ProfilePage />} /> 
         <Route path="/suggest" element={<SuggestionPage />} /> 
+        <Route path="/pre-exam-suggestion" element={<PreExamSuggest />}/>
         <Route path="/" element={<LogInPage />} /> 
         <Route path="/score/:username" element={<ScorePage />} /> 
         <Route path="/404" element={<NotFound />}/>

@@ -37,47 +37,50 @@ export default function ScorePage() {
                 const response = await fetch(`http://localhost:3000/student-score/topic-wise/${username}`);
                 const data = await response.json();
                 console.log(data)
-
-                const processedRounds = data.map(round => {
-                    const { scheduleName, SectionData,  UserTestStartDate, UserTestStartTime} = round;
-
-                let totalScore = 0;
-                let totalQuestions = 0;
-                const topics = [];
-
-                if (Object.keys(SectionData).length === 0) {
-                    const combinedDateTimeString = `${UserTestStartDate}T${UserTestStartTime}`;
-                    setTestDate(combinedDateTimeString);
+                if (data['message'] === 'No records found with that LoginName.') {
+                    navigate('/pre-exam-suggestion');
                 } else {
-                    setTestDate(null);
-                }
-
-                Object.values(SectionData).forEach(section => {
-                    const { scoreDetail, maxScore } = section;
-
-                    totalQuestions += maxScore;
-                    
-                    Object.entries(scoreDetail).forEach(([topicKey, topicValue]) => {
-                        topics.push({
-                            topicName: topicValue.topicName,
-                            topicScore: topicValue.topicScore,
-                            totalQuestions: topicValue.totalQuestions
-                        });
-
-                        totalScore += topicValue.topicScore;
-                    });
-                });
-
-                return {
-                    round: scheduleName,    
-                    totalScore: totalScore, 
-                    totalQuestions: totalQuestions, 
-                    scoreDetails: topics    
-                };
-                });
+                    const processedRounds = data.map(round => {
+                        const { scheduleName, SectionData,  UserTestStartDate, UserTestStartTime} = round;
     
-                console.log(processedRounds);
-                setScore(processedRounds)
+                    let totalScore = 0;
+                    let totalQuestions = 0;
+                    const topics = [];
+    
+                    if (Object.keys(SectionData).length === 0) {
+                        const combinedDateTimeString = `${UserTestStartDate}T${UserTestStartTime}`;
+                        setTestDate(combinedDateTimeString);
+                    } else {
+                        setTestDate(null);
+                    }
+    
+                    Object.values(SectionData).forEach(section => {
+                        const { scoreDetail, maxScore } = section;
+    
+                        totalQuestions += maxScore;
+                        
+                        Object.entries(scoreDetail).forEach(([topicKey, topicValue]) => {
+                            topics.push({
+                                topicName: topicValue.topicName,
+                                topicScore: topicValue.topicScore,
+                                totalQuestions: topicValue.totalQuestions
+                            });
+    
+                            totalScore += topicValue.topicScore;
+                        });
+                    });
+    
+                    return {
+                        round: scheduleName,    
+                        totalScore: totalScore, 
+                        totalQuestions: totalQuestions, 
+                        scoreDetails: topics    
+                    };
+                    });
+        
+                    console.log(processedRounds);
+                    setScore(processedRounds)
+                }
             } catch (err) {
                 setError(err.message);
             } finally {

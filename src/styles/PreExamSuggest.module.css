@@ -1,0 +1,27 @@
+.content-panel-pre-exam {
+    width: 87%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.content-panel-pre-exam img {
+    width: auto;
+    height: 50%;
+}
+
+.header {
+    text-align: left;
+}
+
+.header h2 {
+    font-size: 90px;
+    line-height: 0;
+}
+
+.btn-pre-suggest {
+    color: black !important;
+    background-color: bisque;
+    padding: 10px 2rem;
+    border-radius: 10px;
+}
