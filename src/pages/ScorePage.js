@@ -12,7 +12,7 @@ export default function ScorePage() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [testDate, setTestDate] = useState(null);
-    const courseName = "012XXXXX Computer Programming";
+    const courseName = "01204111 Computer and Programming";
     const {username} = useParams();
     const navigate = useNavigate(); 
 
