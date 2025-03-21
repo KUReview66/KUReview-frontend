@@ -5,11 +5,11 @@ import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
     const navigate = useNavigate(); 
-    const username = localStorage.getItem('username') || "guest"; // Default to 'guest' if not found
-
+    const username = localStorage.getItem('username') || "guest"; 
     const handleLogout = (e) => {
         e.preventDefault();
         localStorage.setItem('username', '');
+        localStorage.setItem('password', '');
         navigate('/');
     }
 

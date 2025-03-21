@@ -22,6 +22,7 @@ function LogInPage() {
         try {
             const response = await axios.post('http://localhost:3000/login', loginData);
             localStorage.setItem('username', username);
+            localStorage.setItem('password', password);
             navigate(`score/${username}`);
         } catch (err) {
             console.error(err)
