@@ -7,7 +7,10 @@ import axios from 'axios';
 function LogInPage() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('')
-    const navigate = useNavigate();    
+    const navigate = useNavigate();   
+    localStorage.setItem('username', '');
+    localStorage.setItem('password', '');
+    console.log(username,password) 
 
     const handleLogin = async (e) => {
         e.preventDefault();
