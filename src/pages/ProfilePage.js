@@ -4,116 +4,116 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import { Paper, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import Navbar from "../components/navBar";
 import styles from '../styles/Profile.module.css'; 
+import { useParams } from "react-router-dom";
 
-export default function ProfilePage() {
-  const [round, setRound] = useState(1);  
+export default function ProfilePage() { 
+  const { username } = useParams(); 
+  const [round, setRound] = useState("");  
   const [score, setScore] = useState([]);
   const [unit, setUnit] = useState([]);
   const [unitScore, setUnitScore] = useState([]);
-  const studentId = "6410509012";
 
   useEffect(() => {
+    if (!username) {
+      console.error("Username is missing!");
+      return;
+    }
+
     const fetchScores = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/student-score/topic-wise/b6410545509`);
+        const response = await fetch(`http://localhost:3000/student-score/topic-wise/${username}`);
         if (!response.ok) {
           throw new Error("Failed to fetch scores");
         }
         const data = await response.json();
 
+        console.log("🔹 Raw API Response:", data);
+
         const processedRounds = data.map(round => {
-          const { scheduleName, SectionData} = round;
+          const { scheduleName, SectionData } = round;
 
-        let totalScore = 0;
-        let totalQuestions = 0;
-        const topics = [];
+          let totalScore = 0;
+          let totalQuestions = 0;
+          const topics = [];
 
-        Object.values(SectionData).forEach(section => {
+          Object.values(SectionData).forEach(section => {
             const { scoreDetail, maxScore } = section;
-
             totalQuestions += maxScore;
-            
-            Object.entries(scoreDetail).forEach(([topicKey, topicValue]) => {
-                topics.push({
-                    topicName: topicValue.topicName,
-                    topicScore: topicValue.topicScore,
-                    totalQuestions: topicValue.totalQuestions
-                });
 
-                totalScore += topicValue.topicScore;
+            Object.entries(scoreDetail).forEach(([_, topicValue]) => {
+              topics.push({
+                topicName: topicValue.topicName,
+                topicScore: topicValue.topicScore,
+                totalQuestions: topicValue.totalQuestions
+              });
+              totalScore += topicValue.topicScore;
             });
+          });
+
+          return {
+            round: scheduleName,  // Keep it as a string
+            totalScore,
+            totalQuestions,
+            scoreDetails: topics 
+          };
         });
 
-        return {
-            round: scheduleName,    
-            totalScore: totalScore, 
-            totalQuestions: totalQuestions, 
-            scoreDetails: topics    
-        };
-        });
+        console.log("✅ Processed Scores:", processedRounds);
+        setScore(processedRounds);
 
-        console.log(processedRounds);
-        setScore(processedRounds)
+        if (!round && processedRounds.length > 0) {
+          setRound(processedRounds[0].round);
+          updateChart(processedRounds[0]);
+        }
 
-        const currentRoundData = processedRounds.find(entry => entry.round === round);
-        console.log(currentRoundData)
       } catch (err) {
-        console.error(err);
+        console.error("❌ Error fetching scores:", err);
       }
     };
 
     fetchScores();
-  }, [round, unit, unitScore]);
+  }, [username]);  
+  const updateChart = (roundData) => {
+    if (roundData) {
+      setUnit(roundData.scoreDetails.map(topic => topic.topicName));
+      setUnitScore(roundData.scoreDetails.map(topic => topic.topicScore));
+    } else {
+      setUnit([]);
+      setUnitScore([]);
+    }
+  };
 
   const handleRoundChange = (event) => {
-    const roundText = event.target.value; 
-    const roundNumber = parseInt(roundText); 
+    const selectedRound = event.target.value;
+    setRound(selectedRound);
 
-    if (isNaN(roundNumber)) {
-      setRound(1);
-      alert(`Invalid round selected: ${roundText}`);
-      return;
+    console.log("Updated Round:", selectedRound);
+    console.log("Full Score Data:", score);
+
+    const currentRoundData = score.find(entry => entry.round === selectedRound);
+    console.log("Newly Selected Round Data:", currentRoundData);
+
+    if (currentRoundData) {
+      updateChart(currentRoundData);
+    } else {
+      console.warn("⚠️ No data found for selected round:", selectedRound);
     }
-
-    setRound(roundNumber);
-
-    const currentRoundData = score.find(entry => entry.round === roundNumber);
-    if (!currentRoundData) {
-      alert(`No data available for ${roundText}`);
-      return;
-    }
-
-    setUnit(Object.keys(currentRoundData.topics));
-    setUnitScore(Object.values(currentRoundData.topics).map(topic => topic.topicScore));
   };
-
-  const formatRound = (round) => {
-    if (round === 1) return "1st Round";
-    if (round === 2) return "2nd Round";
-    if (round === 3) return "3rd Round";
-    return `${round}th Round`;
-  };
-  
 
   return (
     <div className={styles.container}>
-      <div>
-        <Navbar />
-      </div>
+      <Navbar />
 
       <div className={styles.flexContainer}>
         <div className={styles.leftColumn}>
-
           <div className={styles.profileImage}>
             <img src="/userprofile.png" alt="User Profile" className={styles.profileImg} />
           </div>
 
           <div className={styles.userInfo}>
-            <div className={styles.username}>Ploy Preme</div>
-            <div className={styles.userInfoText}>{studentId}</div>
+            <div className={styles.username}>{username}</div>
             <div className={styles.userInfoText}>Joined February 2024</div>
           </div>
-
 
           {/* Round Selector */}
           <div className={styles.roundSelector}>
@@ -125,8 +125,8 @@ export default function ProfilePage() {
                 value={round}
                 onChange={handleRoundChange}
               >
-                {[1, 2, 3].map((r) => (
-                  <MenuItem key={r} value={r}>{formatRound(r)}</MenuItem>
+                {score.map((entry) => (
+                  <MenuItem key={entry.round} value={entry.round}>{entry.round}</MenuItem>
                 ))}
               </Select>
             </FormControl>
@@ -134,47 +134,42 @@ export default function ProfilePage() {
         </div>
 
         <div className={styles.rightColumn}>
-          {/* Bar Chart */}
           <div className={styles.chartSection}>
-          <div className={styles.statisticsTitle}>Statistics</div>
-          <div className={styles.compareButton}>
-            Score Compare with Average
-          </div>
-          {/* Color Boxes with Labels for Student score and Average */}
-          <div className={styles.legend}>
-            <div className={styles.legendItem}>
-              <div className={styles.colorBox} style={{ backgroundColor: '#02B2AF' }}></div>
-              <span>Student score</span>
+            <div className={styles.statisticsTitle}>Statistics</div>
+            <div className={styles.compareButton}>Score Compare with Average</div>
+            
+            <div className={styles.legend}>
+              <div className={styles.legendItem}>
+                <div className={styles.colorBox} style={{ backgroundColor: '#02B2AF' }}></div>
+                <span>Student score</span>
+              </div>
+              <div className={styles.legendItem}>
+                <div className={styles.colorBox} style={{ backgroundColor: '#2E96FF' }}></div>
+                <span>Average</span>
+              </div>
             </div>
-            <div className={styles.legendItem}>
-              <div className={styles.colorBox} style={{ backgroundColor: '#2E96FF' }}></div>
-              <span>Average</span>
-            </div>
+
+            {/* ✅ Only render chart when data exists */}
+            {unit.length > 0 && unitScore.length > 0 && (
+              <BarChart
+                series={[
+                  { name: "Student Score", data: unitScore, color: '#02B2AF' }, 
+                  { name: "Class Average", data: [1,1,1,1,10,1,1], color: '#2E96FF' }, 
+                ]}
+                height={290}
+                xAxis={[{ data: unit, scaleType: 'band' }]}
+                margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
+              />
+            )}
           </div>
 
-
-            <BarChart
-              series={[
-                { data: unitScore }, // Student scores
-                { data: [3.5, 3, 4, 2, 3, 1, 0] },  // Average scores
-              ]}
-              height={290}
-              xAxis={[{ data: unit, scaleType: 'band' }]}
-              margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
-            />
-          </div>
-
-
-
-          {/* Score Information in Two Columns */}
           <Paper className={styles.scoreInfo}>
-            <div className={styles.scoreText}><strong>Your score:</strong> 42/100</div>
+            <div className={styles.scoreText}><strong>Your score:</strong> {score.find(entry => entry.round === round)?.totalScore || "N/A"} / 100</div>
             <div className={styles.scoreText}><strong>Mean:</strong> 44.42</div>
             <div className={styles.scoreText}><strong>S.D.:</strong> 12.72</div>
             <div className={styles.scoreText}><strong>Max:</strong> 77</div>
             <div className={styles.scoreText}><strong>Min:</strong> 0</div>
           </Paper>
-
         </div>
       </div>
     </div>

@@ -19,11 +19,11 @@ export default function Navbar() {
             <div className={styles['nav-item']}>
                 {/* Navigate to /score/username */}
                 <div 
-                    className={styles['name-icon']} 
                     onClick={() => navigate(`/score/${username}`)} 
                     style={{ cursor: "pointer" }}
                 >
-                    <img src={KuReviewLogo} alt="logo" />
+                    <img src={KuReviewLogo} alt="logo"         style={{ width: "120px", height: "auto" , margin: "10px"}} 
+ />
                 </div>
 
                 {/* Navigate to /profile/username */}
