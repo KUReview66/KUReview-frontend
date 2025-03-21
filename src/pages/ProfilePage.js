@@ -5,6 +5,8 @@ import { Paper, Select, MenuItem, FormControl, InputLabel } from '@mui/material'
 import Navbar from "../components/navBar";
 import styles from '../styles/Profile.module.css'; 
 import { useParams } from "react-router-dom";
+import NotFound from "./NotFound";
+
 
 export default function ProfilePage() { 
   const { username } = useParams(); 
@@ -100,7 +102,14 @@ export default function ProfilePage() {
     }
   };
 
+  const password = localStorage.getItem('password');
+
   return (
+    <>
+    {
+        password === '' ? (
+                      <NotFound />
+                  ) : (
     <div className={styles.container}>
       <Navbar />
 
@@ -172,6 +181,8 @@ export default function ProfilePage() {
           </Paper>
         </div>
       </div>
-    </div>
+    </div>)
+    }
+    </>
   );
 }
