@@ -48,6 +48,7 @@ export default function SuggestionPage() {
   const [error, setError] = useState(null);
   const [userAnswers, setUserAnswers] = useState({});
   const [fetchingScores, setFetchingScores] = useState(true);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
 
   useEffect(() => {
     const fetchScores = async () => {
@@ -63,7 +64,6 @@ export default function SuggestionPage() {
 
         // Find the specific round
         const roundData = data.find((item) => item.scheduleName === round);
-        console.log("Filtered Round Data:", roundData);
 
         if (!roundData || !roundData.SectionData) {
           setStudentScores({});
@@ -75,7 +75,6 @@ export default function SuggestionPage() {
               formattedScores[topic.topicName] = topic.score;
             });
           });
-          console.log("Formatted Scores:", formattedScores); // 🔍 Log processed scores
 
           setStudentScores(formattedScores);
         }
@@ -95,9 +94,8 @@ export default function SuggestionPage() {
     setSelectedSubtopicIndex(subtopicIndex);
     const subtopic = unitSubtopics[unit]?.[subtopicIndex] || unit;
     setSuggestion("⏳ Generating content...");
-    console.log(`🟢 Fetching content for: ${subtopic} (Unit: ${unit})`);
+    setCurrentVideoIndex(0);
     const studentScore = studentScores[unit] || 0;
-    console.log(studentScore);
 
     let difficultyLevel;
     if (studentScore < 40) {
@@ -159,7 +157,7 @@ export default function SuggestionPage() {
           },
           {
             role: "user",
-            content: `Generate a multiple-choice quiz with a correct answer for '${subtopic}'. Format as JSON {"question": "...", "options": ["A: ...", "B: ...", "C: ...", "D: ..."], "answer": "A"}`,
+            content: `Generate a multiple-choice quiz with a correct answer for '${subtopic}'. Format as JSON {"question": "...", "options": ["A: ...", "B: ...", "C: ...", "D: ..."], "answer": "A" or "B" or "C" or "D" with random correct answer and pls don't put any reson for the formay answer just A or B or C or "}`,
           },
         ],
         max_tokens: 500,
@@ -183,7 +181,7 @@ export default function SuggestionPage() {
     if (answer.toUpperCase() === correctAnswer) {
       setUserAnswers((prev) => ({ ...prev, [selectedSubtopicIndex]: true }));
     } else {
-      alert("Incorrect answer! Please try again before proceeding.");
+      alert("Incorrect answer! Please try again.");
     }
   };
   const password = localStorage.getItem("password");
@@ -319,17 +317,73 @@ export default function SuggestionPage() {
                   </div>
                 </Box>
               ) : (
+
                 <div className={styles.videoContainer}>
-                  <Typography variant="h6">{selectedUnit} Video</Typography>
-                  <iframe
-                    width="80%"
-                    height="400"
-                    src={`https://www.youtube.com/embed/${unitVideos[selectedUnit][0].url}`}
-                    title={unitVideos[selectedUnit][0].title}
-                    frameBorder="0"
-                    allowFullScreen
-                  ></iframe>
-                </div>
+                <Typography variant="h6">{selectedUnit} Video</Typography>
+            
+                {/* 🔹 Get current video object */}
+                {unitVideos[selectedUnit] &&
+                  unitVideos[selectedUnit][currentVideoIndex] && (
+                    <>
+                      <Typography variant="subtitle1" className={styles.videoTitle}>
+                        {unitVideos[selectedUnit][currentVideoIndex].title}
+                      </Typography>
+            
+                      {/* 🔹 Render YouTube Videos as <iframe> */}
+                      {unitVideos[selectedUnit][currentVideoIndex].type === "youtube" ? (
+                        <iframe
+                          width="80%"
+                          height="400"
+                          src={`https://www.youtube.com/embed/${unitVideos[selectedUnit][currentVideoIndex].url}`}
+                          title={unitVideos[selectedUnit][currentVideoIndex].title}
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        ></iframe>
+                      ) : (
+                        /* 🔹 Render MP4 Videos as <video> */
+                        <video key={currentVideoIndex} width="80%" controls>
+                          <source
+                            src={unitVideos[selectedUnit][currentVideoIndex].url}
+                            type="video/mp4"
+                          />
+                          Your browser does not support the video tag.
+                        </video>
+                      )}
+            
+                      {/* 🔹 Video Navigation */}
+                      <div className={styles.videoNavigation}>
+                        <Button
+                          onClick={() =>
+                            setCurrentVideoIndex((prev) => Math.max(prev - 1, 0))
+                          }
+                          disabled={currentVideoIndex === 0}
+                          className={`${styles.navButton} ${styles.prevButton}`}
+                        >
+                      ◀ Previous
+                        </Button>
+            
+                        <Button
+                          onClick={() =>
+                            setCurrentVideoIndex((prev) =>
+                              Math.min(
+                                prev + 1,
+                                unitVideos[selectedUnit]?.length - 1
+                              )
+                            )
+                          }
+                          disabled={
+                            currentVideoIndex >=
+                            unitVideos[selectedUnit]?.length - 1
+                          }
+                          className={`${styles.navButton} ${styles.nextButton}`}
+                        >
+                      Next ▶
+                        </Button>
+                      </div>
+                    </>
+                  )}
+              </div>
               )}
             </div>
           )}
