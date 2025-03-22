@@ -14,7 +14,7 @@ export default function ProfilePage() {
   const [score, setScore] = useState([]);
   const [unit, setUnit] = useState([]);
   const [unitScore, setUnitScore] = useState([]);
-  const [studentInfo, setStudentInfo] = useState(null);
+  const [studentInfo, setStudentInfo] = useState("");
 
 
   useEffect(() => {
@@ -26,12 +26,12 @@ export default function ProfilePage() {
     const fetchScores = async () => {
       try {
         const response = await fetch(`http://localhost:3000/student-score/topic-wise/${username}`);
+
         if (!response.ok) {
           throw new Error("Failed to fetch scores");
         }
         const data = await response.json();
 
-        console.log("🔹 Raw API Response:", data);
 
         const processedRounds = data.map(round => {
           const { scheduleName, SectionData } = round;
@@ -55,14 +55,13 @@ export default function ProfilePage() {
           });
 
           return {
-            round: scheduleName,  // Keep it as a string
+            round: scheduleName,  
             totalScore,
             totalQuestions,
             scoreDetails: topics 
           };
         });
 
-        console.log("✅ Processed Scores:", processedRounds);
         setScore(processedRounds);
 
         if (!round && processedRounds.length > 0) {
@@ -92,9 +91,9 @@ export default function ProfilePage() {
         console.error("❌ Error fetching student info:", err);
       }
     };
-
-    fetchScores();
     fetchStudentInfo();
+    fetchScores();
+
   }, [username]);  
   const updateChart = (roundData) => {
     if (roundData) {
@@ -110,12 +109,7 @@ export default function ProfilePage() {
     const selectedRound = event.target.value;
     setRound(selectedRound);
 
-    console.log("Updated Round:", selectedRound);
-    console.log("Full Score Data:", score);
-
     const currentRoundData = score.find(entry => entry.round === selectedRound);
-    console.log("Newly Selected Round Data:", currentRoundData);
-
     if (currentRoundData) {
       updateChart(currentRoundData);
     } else {
