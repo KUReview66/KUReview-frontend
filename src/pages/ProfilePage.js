@@ -14,6 +14,8 @@ export default function ProfilePage() {
   const [score, setScore] = useState([]);
   const [unit, setUnit] = useState([]);
   const [unitScore, setUnitScore] = useState([]);
+  const [studentInfo, setStudentInfo] = useState(null);
+
 
   useEffect(() => {
     if (!username) {
@@ -72,8 +74,27 @@ export default function ProfilePage() {
         console.error("❌ Error fetching scores:", err);
       }
     };
+    const fetchStudentInfo = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/studentInfo/${username}`);
+        const data = await res.json();
+        const student = data[0]?.data?.user?.student;
+
+        if (student) {
+          setStudentInfo({
+            firstNameEn: student.firstNameEn,
+            lastNameEn: student.lastNameEn,
+            facultyNameEn: student.facultyNameEn,
+            majorNameEn: student.majorNameEn,
+          });
+        }
+      } catch (err) {
+        console.error("❌ Error fetching student info:", err);
+      }
+    };
 
     fetchScores();
+    fetchStudentInfo();
   }, [username]);  
   const updateChart = (roundData) => {
     if (roundData) {
@@ -121,7 +142,11 @@ export default function ProfilePage() {
 
           <div className={styles.userInfo}>
             <div className={styles.username}>{username}</div>
-            <div className={styles.userInfoText}>Joined February 2024</div>
+            <>
+                <div className={styles.userInfoText}>{studentInfo.firstNameEn} {studentInfo.lastNameEn}</div>
+                <div className={styles.userInfoText}>{studentInfo.facultyNameEn}</div>
+                <div className={styles.userInfoText}>{studentInfo.majorNameEn}</div>
+              </>
           </div>
 
           {/* Round Selector */}
