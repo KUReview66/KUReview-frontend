@@ -49,6 +49,9 @@ export default function SuggestionPage() {
   const [userAnswers, setUserAnswers] = useState({});
   const [fetchingScores, setFetchingScores] = useState(true);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
+  useEffect(() => {
+    console.log("✅ Suggestion updated:", suggestion);
+  }, [suggestion]);
 
   useEffect(() => {
     const fetchScores = async () => {
@@ -92,90 +95,154 @@ export default function SuggestionPage() {
     setLoading(true);
     setSelectedUnit(unit);
     setSelectedSubtopicIndex(subtopicIndex);
-    const subtopic = unitSubtopics[unit]?.[subtopicIndex] || unit;
-    setSuggestion("⏳ Generating content...");
     setCurrentVideoIndex(0);
+  
+    const subtopic = unitSubtopics[unit]?.[subtopicIndex] || unit;
     const studentScore = studentScores[unit] || 0;
-
-    let difficultyLevel;
-    if (studentScore < 40) {
-      difficultyLevel = "Beginner";
-    } else if (studentScore < 75) {
-      difficultyLevel = "Intermediate";
-    } else {
-      difficultyLevel = "Advanced";
-    }
-
-    const exerciseCount = studentScore < 50 ? 5 : 3;
-
-    const prompt = `
-    The student scored ${studentScore}/100 in '${unit}'.
-    Suggest content in the '${subtopic}' covering **${difficultyLevel}** difficulty levels.
-    ### Important Rules:
-    - Do NOT include greetings like "Certainly!", "Sure!", "Here is your outline...", etc.
-
-    The module should include:
-    1. **Concept Explanation**: Explain each subtopic step-by-step.
-    2. **Multiple Code Examples**: At least 3 Python code snippets covering different subtopics.
-    3. **Common Mistakes and Fixes**: Explain 2-3 mistakes students often make and how to fix them.
-    4. **Exercises**: Provide ${exerciseCount} practice exercises with solutions.
-    5. **Solution**: Provide solutions with given exercises `;
-
-    if (!OPENAI_API_KEY) {
-      setSuggestion(
-        "⚠️ Error: Missing API key. Please check your configuration."
-      );
-      setLoading(false);
-      return;
-    }
-
-    const openai = new OpenAI({
-      apiKey: OPENAI_API_KEY,
-      dangerouslyAllowBrowser: true,
-    });
-
+    const studentId = username;
+  
     try {
-      const response = await openai.chat.completions.create({
+      // ✅ 1. Check if suggestion already exists
+      const suggestionRes = await fetch(`http://localhost:3000/suggest/${username}`);
+      const allData = await suggestionRes.json();
+      let matched
+  
+      if (allData.length > 0) {
+        matched = allData.find(
+          (item) =>
+            item.round === round &&
+          item.unit === unit &&
+          item.subtopic === subtopic
+        );
+      } else {
+        matched = false;
+      }
+      if (matched) {
+        console.log("✅ Found suggestion from backend");
+        setSuggestion(matched.content);
+        setQuiz(matched.quiz);
+        setCorrectAnswer(matched.quiz?.answer?.trim().toUpperCase());
+        return; // ✅ Done, no need to generate
+      }
+  
+      // ❌ No record → Generate new content
+      console.log("⚙️ Generating new content using OpenAI...");
+      setSuggestion("⏳ Generating content...");
+  
+      let difficultyLevel;
+      if (studentScore < 40) difficultyLevel = "Beginner";
+      else if (studentScore < 75) difficultyLevel = "Intermediate";
+      else difficultyLevel = "Advanced";
+  
+      const exerciseCount = studentScore < 50 ? 5 : 3;
+  
+      const prompt = `
+  The student scored ${studentScore}/100 in '${unit}'.
+  Suggest content in the '${subtopic}' covering **${difficultyLevel}** difficulty levels.
+  
+  ### Important Rules:
+  - Do NOT include greetings like "Certainly!", "Sure!", etc.
+  
+  The module should include:
+  1. **Concept Explanation**
+  2. **Multiple Code Examples**
+  3. **Common Mistakes and Fixes**
+  4. **Exercises** (${exerciseCount})
+  5. **Solution** for those exercises
+      `;
+  
+      const openai = new OpenAI({
+        apiKey: OPENAI_API_KEY,
+        dangerouslyAllowBrowser: true,
+      });
+  
+      // ✅ Generate content
+      const contentRes = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [
-          {
-            role: "system",
-            content: "You are an AI tutor providing structured Python lessons.",
-          },
+          { role: "system", content: "You are an AI tutor for Python." },
           { role: "user", content: prompt },
         ],
         max_tokens: 1500,
       });
-      setSuggestion(response.choices[0].message.content);
-
-      const quizResponse = await openai.chat.completions.create({
+  
+      const generatedContent = contentRes.choices[0].message.content;
+  
+      // ✅ Generate quiz
+      const quizRes = await openai.chat.completions.create({
         model: "gpt-3.5-turbo",
         messages: [
-          {
-            role: "system",
-            content: "You are an AI quiz generator for Python lessons.",
-          },
+          { role: "system", content: "You are an AI quiz generator." },
           {
             role: "user",
-            content: `Generate a multiple-choice quiz with a correct answer for '${subtopic}'. Format as JSON {"question": "...", "options": ["A: ...", "B: ...", "C: ...", "D: ..."], "answer": "A" or "B" or "C" or "D" with random correct answer and pls don't put any reson for the formay answer just A or B or C or "}`,
+            content: `Generate a multiple-choice quiz with a correct answer for '${subtopic}'. Format as JSON {"question": "...", "options": ["A: ...", "B: ...", "C: ...", "D: ..."], "answer": "A" or "B" or "C" or "D"}`,
           },
         ],
         max_tokens: 500,
       });
-
-      console.log("Quiz Response:", quizResponse.choices[0].message.content);
-
-      const quizData = JSON.parse(quizResponse.choices[0].message.content);
-      setQuiz(quizData);
-      setCorrectAnswer(quizData.answer.trim().toUpperCase());
-    } catch (error) {
-      console.error("Error fetching content:", error);
-      setSuggestion(
-        "⚠️ Error: Unable to generate learning content. Please try again later."
+  
+      const generatedQuiz = JSON.parse(quizRes.choices[0].message.content);
+      const answer = generatedQuiz.answer.trim().toUpperCase();
+  
+      // ✅ Update UI immediately
+      setSuggestion(generatedContent);
+      setQuiz(generatedQuiz);
+      setCorrectAnswer(answer);
+      console.log("Gen", generatedContent)
+      console.log("Set", suggestion)
+      setLoading(false)
+  
+      // ✅ Save to backend
+      const postRes = await fetch(`http://localhost:3000/suggest`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          studentId,
+          round,
+          unit,
+          subtopic,
+          content: generatedContent,
+          quiz: generatedQuiz,
+        }),
+      });
+  
+      if (!postRes.ok) {
+        throw new Error("❌ Failed to save suggestion to backend.");
+      }
+  
+      const postResult = await postRes.json();
+      console.log("📨 POST response:", postResult);
+  
+      await new Promise((resolve) => setTimeout(resolve, 800));
+  
+      const confirmRes = await fetch(`http://localhost:3000/suggest/${username}`);
+      const confirmData = await confirmRes.json();
+      const confirmMatch = confirmData.find(
+        (item) =>
+          item.round === round &&
+          item.unit === unit &&
+          item.subtopic === subtopic
       );
+  
+      if (confirmMatch) {
+        console.log("✅ Confirmed and displaying saved data");
+        setSuggestion(confirmMatch.content);
+        setQuiz(confirmMatch.quiz);
+        setCorrectAnswer(confirmMatch.quiz?.answer?.trim().toUpperCase());
+      } else {
+        console.warn("⚠️ Couldn’t confirm save, fallback to generated content");
+      }
+    } catch (err) {
+      console.error("❌ Error fetching or generating content:", err);
+      setSuggestion("⚠️ Error: Unable to fetch or generate content.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
+  
+  
 
   const handleAnswerSelection = (answer) => {
     if (answer.toUpperCase() === correctAnswer) {
