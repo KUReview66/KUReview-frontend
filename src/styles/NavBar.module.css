@@ -27,6 +27,7 @@ a {
 }
 
 .nav-item {
+    width: 200px;
     padding: 10px;
     cursor: pointer;
 }
@@ -36,6 +37,7 @@ a {
 }
 
 .name-icon {
+    margin-left: 10px;
     display: flex;
     align-items: center;
 }
@@ -73,3 +75,48 @@ a:visited {
     color: black;
     cursor: pointer;
 }
+
+/* ✅ Exercises dropdown container */
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #fff;
+    color: #09451B;
+    border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    padding: 6px 0;
+    min-width: 180px;
+  }
+  
+  /* ✅ Item in the dropdown */
+  .dropdown-item {
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background 0.2s ease;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #f0f7f0;
+    color: #15602b;
+    cursor: pointer;
+  }
+  
+  /* ✅ Positioning container */
+  .name-icon.dropdown {
+    position: relative;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  /* ✅ Show dropdown when needed */
+  .show {
+    display: block;
+  }
+  
+  .hide {
+    display: none;
+  }
+  

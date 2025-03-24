@@ -16,10 +16,14 @@
 }
 
 .unitTitle {
-  font-size: 20px !important;
+  font-family: 'Nunito' !important;
+  font-size: 28px !important;
   font-weight: bold !important;
   margin-bottom: 10px !important;
+  text-align: center !important;
+  width: 100%;
 }
+
 .unitPrompt{
   margin-top: 50px !important;
   font-size: 20px !important;
@@ -92,7 +96,11 @@
   border-radius: 8px;
   border-left: 6px solid #0a451b;
 }
-
+.suggestionBox1 {
+  background-color: #f8f8f8;
+  padding: 20px;
+  border-radius: 8px;
+}
 
 /* 🔹 Video Section */
 .videoContainer {
@@ -180,13 +188,16 @@ video {
 }
 
 .quizQuestion {
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
   font-family: 'Nunito' !important;
   font-size: 1.1em;
   margin-bottom: 15px;
-  text-align: left; /* Ensures the question text is left-aligned */
+  text-align: left; 
 }
 
 .quizOptions {
+  text-transform: none !important;
   font-family: 'Nunito' !important;
   display: flex !important;
   flex-direction: column !important;
@@ -196,6 +207,8 @@ video {
 }
 
 .quizButton {
+  text-transform: none !important;
+
   width: 100% !important;
   text-align: left !important;
   padding: 12px !important;
@@ -266,4 +279,22 @@ video {
   font-size: 18px;
   font-weight: bold;
   color: #333;
+}
+
+.quizBox {
+  position: relative;
+  background-color: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.subtopicText {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-style: italic;
+  color: #888;
+  font-size: 14px;
 }
