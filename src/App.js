@@ -13,6 +13,7 @@ import ExerciseU6Page from "./pages/ExerciseU6Page";
 import ExerciseU7Page from "./pages/ExerciseU7Page";
 import ExerciseU8Page from "./pages/ExerciseU8Page";
 import ExerciseU9Page from "./pages/ExerciseU9Page";
+import ScoreHistoryPage from "./pages/scorehistory";
 
 
 export default function App() {
@@ -26,13 +27,14 @@ export default function App() {
         <Route path="/score/:username" element={<ScorePage />} /> 
         <Route path="/404" element={<NotFound />}/>
         <Route path="*" element={<NotFound  />} />
-        <Route path="/exerciseU2" element={<ExerciseU2Page  />} />
-        <Route path="/exerciseU3" element={<ExerciseU3Page  />} />
-        <Route path="/exerciseU5" element={<ExerciseU5Page  />} />
-        <Route path="/exerciseU6" element={<ExerciseU6Page  />} />
-        <Route path="/exerciseU7" element={<ExerciseU7Page  />} />
-        <Route path="/exerciseU8" element={<ExerciseU8Page  />} />
-        <Route path="/exerciseU9" element={<ExerciseU9Page  />} />
+        <Route path="/exerciseU2/:username" element={<ExerciseU2Page  />} />
+        <Route path="/exerciseU3/:username" element={<ExerciseU3Page  />} />
+        <Route path="/exerciseU5/:username" element={<ExerciseU5Page  />} />
+        <Route path="/exerciseU6/:username" element={<ExerciseU6Page  />} />
+        <Route path="/exerciseU7/:username" element={<ExerciseU7Page  />} />
+        <Route path="/exerciseU8/:username" element={<ExerciseU8Page  />} />
+        <Route path="/exerciseU9/:username" element={<ExerciseU9Page  />} />
+        <Route path="/history/:username" element={<ScoreHistoryPage  />} />
 
 
 

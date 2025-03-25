@@ -1,0 +1,111 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
+.chartContainer {
+  font-family: 'Nunito', sans-serif;
+  width: 100%;
+  padding: 2rem;
+}
+
+.scoreHeader {
+  font-size: 28px;
+  font-weight: 800;
+  text-align: left;
+  color: #1f4f2c;
+  margin-bottom: 1rem;
+}
+
+.unitSelector {
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.selectBox {
+  padding: 8px 12px;
+  border: 2px solid #ccc; 
+  border-radius: 6px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px;
+}
+
+.chartBox {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
+}
+
+.unitScoreList {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background-color: #f7f7f7;
+  border-radius: 12px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.03);
+}
+
+.unitScoreList h3 {
+  font-size: 22px;
+  margin-bottom: 15px;
+  color: #1f4f2c;
+}
+
+.unitScoreList ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+.unitScoreList li {
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #d4e5d2;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.unitScoreList button {
+  padding: 6px 12px;
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+  font-size: 14px;
+
+}
+
+.unitScoreList button:hover {
+  background-color: #43a047;
+}
+
+.unitScoreItem {
+  font-size: 18px;
+  font-weight: 500;
+}
+
+
+/* Optional: Style for responsiveness */
+@media (max-width: 768px) {
+  .scoreHeader {
+    text-align: center;
+    font-size: 24px;
+  }
+
+  .unitSelector {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .selectBox {
+    width: 100%;
+    max-width: 200px;
+  }
+}

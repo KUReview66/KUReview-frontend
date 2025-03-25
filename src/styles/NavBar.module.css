@@ -81,13 +81,14 @@ a:visited {
     position: absolute;
     top: 100%;
     left: 0;
-    background-color: #fff;
-    color: #09451B;
+    background-color: #ffffff;
+    color: #1f4f2c;
     border-radius: 6px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
     z-index: 1000;
     padding: 6px 0;
     min-width: 180px;
+    white-space: nowrap;
   }
   
   /* ✅ Item in the dropdown */
@@ -95,13 +96,22 @@ a:visited {
     padding: 10px 16px;
     font-size: 14px;
     font-weight: 500;
+    cursor: pointer;
     transition: background 0.2s ease;
   }
   
   .dropdown-item:hover {
-    background-color: #f0f7f0;
+    background-color: #eaf4ea;
     color: #15602b;
-    cursor: pointer;
+  }
+  
+  .dropdown-wrapper {
+    position: relative;
+    transition: margin-bottom 0.3s ease;
+  }
+  
+  .dropdown-wrapper.open {
+    margin-bottom: 270px; /* 👈 pushes Exercise History down */
   }
   
   /* ✅ Positioning container */
