@@ -10,7 +10,6 @@ function LogInPage() {
     const navigate = useNavigate();   
     localStorage.setItem('username', '');
     localStorage.setItem('password', '');
-    console.log(username,password) 
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -20,7 +19,6 @@ function LogInPage() {
             password: password
         }
 
-        console.log(loginData)
 
         try {
             const response = await axios.post('http://localhost:3000/login', loginData);

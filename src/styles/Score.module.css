@@ -5,6 +5,8 @@
 }
 
 .content-panel {
+    margin-right: 5%;
+    margin-left: 5%;
     width: 87%;
     margin-top: 2rem;
 }

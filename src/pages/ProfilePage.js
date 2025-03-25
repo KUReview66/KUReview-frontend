@@ -14,6 +14,57 @@ export default function ProfilePage() {
   const [score, setScore] = useState([]);
   const [unit, setUnit] = useState([]);
   const [unitScore, setUnitScore] = useState([]);
+  const [studentInfo, setStudentInfo] = useState("");
+  const [avgPerUnit, setAvgPerUnit] = useState([]);
+const [minPerUnit, setMinPerUnit] = useState([]);
+const [maxPerUnit, setMaxPerUnit] = useState([]);
+const [unitLabels, setUnitLabels] = useState([]);
+
+const fetchClassStatistics = async () => {
+  try {
+    const response = await fetch('http://localhost:3000/score/statistic/64');
+    const result = await response.json();
+
+    const examData = result.data;
+    const rounds = ["comproExamR1", "comproExamR2"];
+    const unitNames = [
+      "02-Basic", "03-Subroutine", "05-Selection",
+      "06-Repetition", "07-List", "08-File", "09-Numpy"
+    ];
+
+    const unitAverages = [];
+    const unitMins = [];
+    const unitMaxs = [];
+
+    unitNames.forEach(unit => {
+      let avgSum = 0, count = 0;
+      let minScores = [], maxScores = [];
+
+      rounds.forEach(round => {
+        const unitData = examData[round][unit];
+        if (unitData) {
+          avgSum += unitData.average;
+          count++;
+          minScores.push(unitData.min);
+          maxScores.push(unitData.max);
+        }
+      });
+
+      unitAverages.push((avgSum / count).toFixed(2));
+      minScores.length > 0 ? unitMins.push(Math.min(...minScores)) : unitMins.push(0);
+      maxScores.length > 0 ? unitMaxs.push(Math.max(...maxScores)) : unitMaxs.push(0);
+    });
+
+    setAvgPerUnit(unitAverages);
+    setMinPerUnit(unitMins);
+    setMaxPerUnit(unitMaxs);
+    setUnitLabels(unitNames);
+
+  } catch (error) {
+    console.error("❌ Error fetching class statistics:", error);
+  }
+};
+
 
   useEffect(() => {
     if (!username) {
@@ -24,12 +75,12 @@ export default function ProfilePage() {
     const fetchScores = async () => {
       try {
         const response = await fetch(`http://localhost:3000/student-score/topic-wise/${username}`);
+
         if (!response.ok) {
           throw new Error("Failed to fetch scores");
         }
         const data = await response.json();
 
-        console.log("🔹 Raw API Response:", data);
 
         const processedRounds = data.map(round => {
           const { scheduleName, SectionData } = round;
@@ -53,14 +104,13 @@ export default function ProfilePage() {
           });
 
           return {
-            round: scheduleName,  // Keep it as a string
+            round: scheduleName,  
             totalScore,
             totalQuestions,
             scoreDetails: topics 
           };
         });
 
-        console.log("✅ Processed Scores:", processedRounds);
         setScore(processedRounds);
 
         if (!round && processedRounds.length > 0) {
@@ -72,8 +122,28 @@ export default function ProfilePage() {
         console.error("❌ Error fetching scores:", err);
       }
     };
+    const fetchStudentInfo = async () => {
+      try {
+        const res = await fetch(`http://localhost:3000/studentInfo/${username}`);
+        const data = await res.json();
+        const student = data[0]?.data?.user?.student;
 
+        if (student) {
+          setStudentInfo({
+            firstNameEn: student.firstNameEn,
+            lastNameEn: student.lastNameEn,
+            facultyNameEn: student.facultyNameEn,
+            majorNameEn: student.majorNameEn,
+          });
+        }
+      } catch (err) {
+        console.error("❌ Error fetching student info:", err);
+      }
+    };
+    fetchStudentInfo();
     fetchScores();
+    fetchClassStatistics();
+
   }, [username]);  
   const updateChart = (roundData) => {
     if (roundData) {
@@ -89,12 +159,7 @@ export default function ProfilePage() {
     const selectedRound = event.target.value;
     setRound(selectedRound);
 
-    console.log("Updated Round:", selectedRound);
-    console.log("Full Score Data:", score);
-
     const currentRoundData = score.find(entry => entry.round === selectedRound);
-    console.log("Newly Selected Round Data:", currentRoundData);
-
     if (currentRoundData) {
       updateChart(currentRoundData);
     } else {
@@ -121,7 +186,11 @@ export default function ProfilePage() {
 
           <div className={styles.userInfo}>
             <div className={styles.username}>{username}</div>
-            <div className={styles.userInfoText}>Joined February 2024</div>
+            <>
+                <div className={styles.userInfoText}>{studentInfo.firstNameEn} {studentInfo.lastNameEn}</div>
+                <div className={styles.userInfoText}>{studentInfo.facultyNameEn}</div>
+                <div className={styles.userInfoText}>{studentInfo.majorNameEn}</div>
+              </>
           </div>
 
           {/* Round Selector */}
@@ -158,24 +227,23 @@ export default function ProfilePage() {
               </div>
             </div>
 
-            {/* ✅ Only render chart when data exists */}
             {unit.length > 0 && unitScore.length > 0 && (
-              <BarChart
-                series={[
-                  { name: "Student Score", data: unitScore, color: '#02B2AF' }, 
-                  { name: "Class Average", data: [1,1,1,1,10,1,1], color: '#2E96FF' }, 
-                ]}
-                height={290}
-                xAxis={[{ data: unit, scaleType: 'band' }]}
-                margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
-              />
-            )}
+  <BarChart
+    series={[
+      { name: "Student Score", data: unitScore, color: '#02B2AF' },
+      { name: "Class Average", data: avgPerUnit, color: '#2E96FF' }
+    ]}
+    height={290}
+    xAxis={[{ data: unit, scaleType: 'band' }]}
+    margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
+  />
+)}
+
           </div>
 
           <Paper className={styles.scoreInfo}>
             <div className={styles.scoreText}><strong>Your score:</strong> {score.find(entry => entry.round === round)?.totalScore || "N/A"} / 100</div>
             <div className={styles.scoreText}><strong>Mean:</strong> 44.42</div>
-            <div className={styles.scoreText}><strong>S.D.:</strong> 12.72</div>
             <div className={styles.scoreText}><strong>Max:</strong> 77</div>
             <div className={styles.scoreText}><strong>Min:</strong> 0</div>
           </Paper>
