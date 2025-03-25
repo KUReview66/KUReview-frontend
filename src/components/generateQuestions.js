@@ -8,7 +8,8 @@ const openai = new OpenAI({
 
 const generateQuestions = async (unit, subtopics = []) => {
   const prompt = `
-Generate one multiple choice question for each of the following 10 Python subtopics (Intermediate level), under the unit '${unit}'.
+Generate one multiple choice question for each of the following 10 Python subtopics (Intermediate level), under the unit '${unit}'
+and have some Question give the code and ask what is the resilt after run this code.
 
 Each question should include:
 - "subtopic": the subtopic name
