@@ -92,7 +92,7 @@ export default function StudyProgress() {
                 ) : (
                     progress.map((item, index) => (
                         <div key={index} className={styles["unit-item"]}>
-                            <p>{item.topicName.toUpperCase()}</p>
+                            <p>{item.topicName}</p>
                             <Progress.Line 
                                 percent={item.progress} 
                                 status={statusUnit(item.progress)}
