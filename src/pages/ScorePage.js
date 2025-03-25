@@ -5,11 +5,13 @@ import ScoreBox from "../components/scoreBox";
 import styles from '../styles/Score.module.css';
 import { useParams, useNavigate } from "react-router-dom";
 import NotFound from "./NotFound";
+import StudyProgress from "../components/StudyProgress";
+import { Dropdown } from 'rsuite';
 
 export default function ScorePage() {
-
-    const [isCheckingLogin, setIsCheckingLogin] = useState(true);
+    
     const [score, setScore] = useState([]);
+    const [currentScore, setCurrentScore] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [testDate, setTestDate] = useState(null);
@@ -20,13 +22,9 @@ export default function ScorePage() {
     
     useEffect(() => {
         const fetchScores = async () => {
-            const password = localStorage.getItem('password');
-            const checkedUsername = localStorage.getItem('username');
             try {
-                    console.log(password, checkedUsername)
                     const response = await fetch(`http://localhost:3000/student-score/topic-wise/${username}`);
                     const data = await response.json();
-                    console.log(data)
                     if (data['message'] === 'No records found with that LoginName.') {
                         navigate('/pre-exam-suggestion');
                         return;
@@ -69,8 +67,8 @@ export default function ScorePage() {
                         };
                         });
             
-                        console.log(processedRounds);
                         setScore(processedRounds)
+                        setCurrentScore(score[0])
                     }
                 }
             catch (err) {
@@ -86,12 +84,26 @@ export default function ScorePage() {
         };
     
         fetchScores();
-        console.log('tets')
         return;
     }, [username, navigate]);
 
     const password = localStorage.getItem('password');
-    console.log(typeof password, password)
+
+    useEffect(() => {
+        if (score.length > 0) {
+            setCurrentScore(score[0]);
+        }
+    }, [score]);
+
+    const handleDropdown = (e) => {
+        const index = e - 1; 
+        const selectedScore = score[index];
+
+        if (selectedScore) {
+            setCurrentScore(selectedScore);
+        }
+    };
+
 
     return (
         <>
@@ -100,25 +112,38 @@ export default function ScorePage() {
                 <NotFound />
             ) : (
                 <div style={{display: 'flex'}}>
-                <Navbar />
-                <div className={styles['content-panel']}>
-                    <CountDownPanel date={testDate}/>
-                    <div className="score-container" style={{padding: '2rem'}}>
-                        <div className="header">
-                            <h3>{courseName}</h3>
+                    <Navbar />
+                    <div className={styles['content-container']}>
+
+                        <div className={styles['content-panel']}>
+                            <CountDownPanel date={testDate}/>
+                            <div className={styles['sec-panel']}>
+                                <div className={styles["score-container"]}>
+                                    <div className={styles["header"]}>
+                                        <h3>{courseName}</h3>
+                                    </div>
+                                    <Dropdown title="Round" trigger={['click']}>
+                                        <Dropdown.Item eventKey={1} onSelect={handleDropdown}>Round 1</Dropdown.Item>
+                                        <Dropdown.Item eventKey={2} onSelect={handleDropdown}>Round 2</Dropdown.Item>
+                                        <Dropdown.Item eventKey={3} onSelect={handleDropdown}>Round 3</Dropdown.Item>
+                                    </Dropdown>
+                                    <div className={styles["score-box"]}>
+                                        {score.length > 0 && currentScore ? (
+                                            <ScoreBox round={currentScore.round} score={currentScore} username={username}/>
+                                        ) : (
+                                            <p>No scores available.</p>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                        <div className="score-box">
-                            {score.length > 0 ? (
-                                score.map(item => (
-                                <ScoreBox key={item.round} round={item.round} score={item} username={username} />
-                                ))
-                            ) : (
-                                <p>No scores available.</p>
-                            )}
+
+                        <div className={styles['study-progress']}>
+                            <StudyProgress />
                         </div>
+                        
                     </div>
                 </div>
-            </div>
             )
         }
         </>

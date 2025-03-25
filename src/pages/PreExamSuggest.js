@@ -2,6 +2,9 @@ import Navbar from "../components/navBar";
 import styles from '../styles/PreExamSuggest.module.css';
 
 export default function PreExamSuggest() {
+    
+    const username = localStorage.getItem('username') || "guest"; 
+
     return(
         <>
         <div style={{display: 'flex'}}>
@@ -10,7 +13,7 @@ export default function PreExamSuggest() {
                     <div className={styles['header']}>
                         <h2 style={{textAlign: 'left'}}>Start Strong</h2>
                         <p style={{textAlign: 'left'}}>Key Topics You Should Focus On</p>
-                        <a className={styles['btn-pre-suggest']} href="/suggest">
+                        <a className={styles['btn-pre-suggest']} href={`/suggest/${username}/comproExamR1`}>
                             Get Started &#8594;
                         </a>
                     </div>

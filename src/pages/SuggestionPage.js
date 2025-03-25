@@ -11,6 +11,7 @@ import unitVideos from "../data/videodata";
 import unitSubtopics from "../data/unitdata";
 import { useParams } from "react-router-dom";
 import NotFound from "./NotFound";
+import axios from 'axios';
 
 
 const renderers = {
@@ -48,6 +49,7 @@ export default function SuggestionPage() {
   const [error, setError] = useState(null);
   const [userAnswers, setUserAnswers] = useState({});
   const [fetchingScores, setFetchingScores] = useState(true);
+  const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
 
   useEffect(() => {
     const fetchScores = async () => {
@@ -63,7 +65,6 @@ export default function SuggestionPage() {
 
         // Find the specific round
         const roundData = data.find((item) => item.scheduleName === round);
-        console.log("Filtered Round Data:", roundData);
 
         if (!roundData || !roundData.SectionData) {
           setStudentScores({});
@@ -75,7 +76,6 @@ export default function SuggestionPage() {
               formattedScores[topic.topicName] = topic.score;
             });
           });
-          console.log("Formatted Scores:", formattedScores); // 🔍 Log processed scores
 
           setStudentScores(formattedScores);
         }
@@ -93,97 +93,159 @@ export default function SuggestionPage() {
     setLoading(true);
     setSelectedUnit(unit);
     setSelectedSubtopicIndex(subtopicIndex);
+    setCurrentVideoIndex(0);
+  
     const subtopic = unitSubtopics[unit]?.[subtopicIndex] || unit;
-    setSuggestion("⏳ Generating content...");
-    console.log(`🟢 Fetching content for: ${subtopic} (Unit: ${unit})`);
     const studentScore = studentScores[unit] || 0;
-    console.log(studentScore);
-
-    let difficultyLevel;
-    if (studentScore < 40) {
-      difficultyLevel = "Beginner";
-    } else if (studentScore < 75) {
-      difficultyLevel = "Intermediate";
-    } else {
-      difficultyLevel = "Advanced";
-    }
-
-    const exerciseCount = studentScore < 50 ? 5 : 3;
-
-    const prompt = `
-    The student scored ${studentScore}/100 in '${unit}'.
-    Suggest content in the '${subtopic}' covering **${difficultyLevel}** difficulty levels.
-    ### Important Rules:
-    - Do NOT include greetings like "Certainly!", "Sure!", "Here is your outline...", etc.
-
-    The module should include:
-    1. **Concept Explanation**: Explain each subtopic step-by-step.
-    2. **Multiple Code Examples**: At least 3 Python code snippets covering different subtopics.
-    3. **Common Mistakes and Fixes**: Explain 2-3 mistakes students often make and how to fix them.
-    4. **Exercises**: Provide ${exerciseCount} practice exercises with solutions.
-    5. **Solution**: Provide solutions with given exercises `;
-
-    if (!OPENAI_API_KEY) {
-      setSuggestion(
-        "⚠️ Error: Missing API key. Please check your configuration."
-      );
-      setLoading(false);
-      return;
-    }
-
-    const openai = new OpenAI({
-      apiKey: OPENAI_API_KEY,
-      dangerouslyAllowBrowser: true,
-    });
-
+    const studentId = username;
+  
     try {
-      const response = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [
+      // ✅ 1. Fetch all existing suggestions for the student
+      const suggestionRes = await fetch(`http://localhost:3000/suggest/${username}`);
+      const allData = await suggestionRes.json();
+      let matched
+      console.log(allData)
+  
+      // ✅ 2. Check if current subtopic suggestion exists
+      if (allData.length > 0) {
+        matched = allData.find(
+          (item) =>
+            item.round === round &&
+          item.unit === unit &&
+          item.subtopic === subtopic
+        );
+      } else {
+        matched = false;
+      }
+  
+      if (matched) {
+        console.log("✅ Found suggestion from backend");
+        setSuggestion(matched.content);
+        setQuiz(matched.quiz);
+        setCorrectAnswer(matched.quiz?.answer?.trim().toUpperCase());
+      } else {
+        // ❌ No record found → Generate new content
+        console.log("⚙️ Generating new content using OpenAI...");
+        setSuggestion("⏳ Generating content...");
+  
+        let difficultyLevel;
+        if (studentScore < 40) difficultyLevel = "Beginner";
+        else if (studentScore < 75) difficultyLevel = "Intermediate";
+        else difficultyLevel = "Advanced";
+  
+        const exerciseCount = studentScore < 50 ? 5 : 3;
+  
+        const prompt = `
+  The student scored ${studentScore}/100 in '${unit}'.
+  Suggest content in the '${subtopic}' covering **${difficultyLevel}** difficulty levels.
+  ### Important Rules:
+  - Do NOT include greetings like "Certainly!", "Sure!", etc.
+  
+  The module should include:
+  1. **Concept Explanation**
+  2. **Multiple Code Examples**
+  3. **Common Mistakes and Fixes**
+  4. **Exercises** (${exerciseCount})
+  5. **Solution** for those exercises
+        `;
+  
+        const openai = new OpenAI({
+          apiKey: OPENAI_API_KEY,
+          dangerouslyAllowBrowser: true,
+        });
+  
+        const contentRes = await openai.chat.completions.create({
+          model: "gpt-3.5-turbo",
+          messages: [
+            { role: "system", content: "You are an AI tutor for Python." },
+            { role: "user", content: prompt },
+          ],
+          max_tokens: 1500,
+        });
+  
+        const generatedContent = contentRes.choices[0].message.content;
+  
+        const quizRes = await openai.chat.completions.create({
+          model: "gpt-3.5-turbo",
+          messages: [
+            { role: "system", content: "You are an AI quiz generator." },
+            {
+              role: "user",
+              content: `Generate a multiple-choice quiz with a correct answer for '${subtopic}'. Format as JSON {"question": "...", "options": ["A: ...", "B: ...", "C: ...", "D: ..."], "answer": "A" or "B" or "C" or "D"}`,
+            },
+          ],
+          max_tokens: 500,
+        });
+  
+        const generatedQuiz = JSON.parse(quizRes.choices[0].message.content);
+        const answer = generatedQuiz.answer.trim().toUpperCase();
+  
+        // // ✅ 3. Update UI
+        // setSuggestion(generatedContent);
+        // setQuiz(generatedQuiz);
+        // setCorrectAnswer(answer);
+        // console.log("SET")
+        // console.log(generatedContent)
+        // console.log(suggestion)
+  
+        // ✅ 4. Save to backend
+        await axios.post(
+          `http://localhost:3000/suggest`,
           {
-            role: "system",
-            content: "You are an AI tutor providing structured Python lessons.",
-          },
-          { role: "user", content: prompt },
-        ],
-        max_tokens: 1500,
-      });
-      setSuggestion(response.choices[0].message.content);
-
-      const quizResponse = await openai.chat.completions.create({
-        model: "gpt-3.5-turbo",
-        messages: [
-          {
-            role: "system",
-            content: "You are an AI quiz generator for Python lessons.",
+            studentId,
+            round,
+            unit,
+            subtopic,
+            content: generatedContent,
+            quiz: generatedQuiz,
           },
           {
-            role: "user",
-            content: `Generate a multiple-choice quiz with a correct answer for '${subtopic}'. Format as JSON {"question": "...", "options": ["A: ...", "B: ...", "C: ...", "D: ..."], "answer": "A"}`,
-          },
-        ],
-        max_tokens: 500,
-      });
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
 
-      console.log("Quiz Response:", quizResponse.choices[0].message.content);
-
-      const quizData = JSON.parse(quizResponse.choices[0].message.content);
-      setQuiz(quizData);
-      setCorrectAnswer(quizData.answer.trim().toUpperCase());
-    } catch (error) {
-      console.error("Error fetching content:", error);
-      setSuggestion(
-        "⚠️ Error: Unable to generate learning content. Please try again later."
-      );
+        console.log("📨 POST sent to backend");
+  
+        // ✅ 5. Confirm it's saved by fetching again
+        const confirmRes = await fetch(`http://localhost:3000/suggest/${username}`);
+        const confirmData = await confirmRes.json();
+        const confirmMatch = confirmData.find(
+          (item) =>
+            item.round === round &&
+            item.unit === unit &&
+            item.subtopic === subtopic
+        );
+  
+        if (confirmMatch) {
+          console.log("✅ Confirmed and displaying saved data");
+          setSuggestion(confirmMatch.content);
+          setQuiz(confirmMatch.quiz);
+          setCorrectAnswer(confirmMatch.quiz?.answer?.trim().toUpperCase());
+        } else {
+          console.warn("⚠️ Couldn't confirm save, fallback to generated");
+          // fallback in case it didn’t get saved
+          setSuggestion(generatedContent);
+          setQuiz(generatedQuiz);
+          setCorrectAnswer(answer);
+        }
+      }
+    } catch (err) {
+      console.error("❌ Error fetching or generating content:", err);
+      setSuggestion("⚠️ Error: Unable to fetch or generate content.");
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   };
+  
+  
 
   const handleAnswerSelection = (answer) => {
     if (answer.toUpperCase() === correctAnswer) {
       setUserAnswers((prev) => ({ ...prev, [selectedSubtopicIndex]: true }));
     } else {
-      alert("Incorrect answer! Please try again before proceeding.");
+      alert("Incorrect answer! Please try again.");
     }
   };
   const password = localStorage.getItem("password");
@@ -319,17 +381,73 @@ export default function SuggestionPage() {
                   </div>
                 </Box>
               ) : (
+
                 <div className={styles.videoContainer}>
-                  <Typography variant="h6">{selectedUnit} Video</Typography>
-                  <iframe
-                    width="80%"
-                    height="400"
-                    src={`https://www.youtube.com/embed/${unitVideos[selectedUnit][0].url}`}
-                    title={unitVideos[selectedUnit][0].title}
-                    frameBorder="0"
-                    allowFullScreen
-                  ></iframe>
-                </div>
+                <Typography variant="h6">{selectedUnit} Video</Typography>
+            
+                {/* 🔹 Get current video object */}
+                {unitVideos[selectedUnit] &&
+                  unitVideos[selectedUnit][currentVideoIndex] && (
+                    <>
+                      <Typography variant="subtitle1" className={styles.videoTitle}>
+                        {unitVideos[selectedUnit][currentVideoIndex].title}
+                      </Typography>
+            
+                      {/* 🔹 Render YouTube Videos as <iframe> */}
+                      {unitVideos[selectedUnit][currentVideoIndex].type === "youtube" ? (
+                        <iframe
+                          width="80%"
+                          height="400"
+                          src={`https://www.youtube.com/embed/${unitVideos[selectedUnit][currentVideoIndex].url}`}
+                          title={unitVideos[selectedUnit][currentVideoIndex].title}
+                          frameBorder="0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        ></iframe>
+                      ) : (
+                        /* 🔹 Render MP4 Videos as <video> */
+                        <video key={currentVideoIndex} width="80%" controls>
+                          <source
+                            src={unitVideos[selectedUnit][currentVideoIndex].url}
+                            type="video/mp4"
+                          />
+                          Your browser does not support the video tag.
+                        </video>
+                      )}
+            
+                      {/* 🔹 Video Navigation */}
+                      <div className={styles.videoNavigation}>
+                        <Button
+                          onClick={() =>
+                            setCurrentVideoIndex((prev) => Math.max(prev - 1, 0))
+                          }
+                          disabled={currentVideoIndex === 0}
+                          className={`${styles.navButton} ${styles.prevButton}`}
+                        >
+                      ◀ Previous
+                        </Button>
+            
+                        <Button
+                          onClick={() =>
+                            setCurrentVideoIndex((prev) =>
+                              Math.min(
+                                prev + 1,
+                                unitVideos[selectedUnit]?.length - 1
+                              )
+                            )
+                          }
+                          disabled={
+                            currentVideoIndex >=
+                            unitVideos[selectedUnit]?.length - 1
+                          }
+                          className={`${styles.navButton} ${styles.nextButton}`}
+                        >
+                      Next ▶
+                        </Button>
+                      </div>
+                    </>
+                  )}
+              </div>
               )}
             </div>
           )}
