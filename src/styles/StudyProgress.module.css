@@ -1,0 +1,33 @@
+.overall-panel {
+    border: #B8B8B8 1px solid;
+    border-radius: 20px;
+    padding: 2rem;
+    width: 200;
+    margin-top: 10;
+}
+
+.overall-panel p {
+    margin-top: 1rem;
+}
+
+.overall-panel h4 {
+    margin-bottom: 1rem;
+}
+
+.overall-panel span {
+    font-size: 25px !important;
+    font-weight: bolder;
+}
+
+.unit-progress {
+    margin-top: 2rem;
+    border: #B8B8B8 1px solid;
+    border-radius: 20px;
+    padding: 2rem;
+    height: 25%;
+    overflow: auto;
+}
+
+.unit-progress p {
+    text-align: left;
+}
