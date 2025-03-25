@@ -2,11 +2,10 @@
     display: flex;
     margin-right: auto;
     margin-left: auto;
+    padding: 1rem;
 }
 
 .content-panel {
-    margin-right: 5%;
-    margin-left: 5%;
     width: 87%;
     margin-top: 2rem;
 }
@@ -29,12 +28,8 @@
     border: #B8B8B8 1px solid;
     padding-top: 1rem;
     border-radius: 20px;
-    margin-right: auto;
-    margin-left: auto;
 }
 
 .study-progress {
-    margin-right: auto;
-    margin-left: auto;
     margin-top: 2rem;
 }
