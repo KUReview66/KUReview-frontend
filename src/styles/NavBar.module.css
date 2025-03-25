@@ -111,9 +111,8 @@ a:visited {
   }
   
   .dropdown-wrapper.open {
-    margin-bottom: 270px; /* 👈 pushes Exercise History down */
+    margin-bottom: 290px; 
   }
-  
   /* ✅ Positioning container */
   .name-icon.dropdown {
     position: relative;
