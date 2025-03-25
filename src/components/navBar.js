@@ -63,48 +63,44 @@ export default function Navbar() {
                     <p>Study</p>
                 </div>
 
-                {/* Exercises Dropdown */}
+
+<div className={`${styles['dropdown-wrapper']} ${showDropdown ? styles['open'] : ''}`}>
+  <div 
+    className={styles['name-icon']} 
+    style={{ cursor: "pointer" }}
+    onClick={() => setShowDropdown(!showDropdown)}
+  >
+    <img src="https://upload.wikimedia.org/wikipedia/commons/3/3e/White_pencil.png" alt="exercise-icon"/>
+    <p>Exercises</p>
+  </div>
+
+  {showDropdown && (
+    <div className={styles['dropdown-menu']}>
+      {units.map((unit, index) => (
+        <div
+          key={index}
+          className={styles['dropdown-item']}
+          onClick={() => {
+            navigate(`${unit.path}/${username}`);
+            setShowDropdown(false);
+          }}
+        >
+          {unit.label}
+        </div>
+      ))}
+    </div>
+  )}
+</div>
+
+
+                {/* history */}
                 <div 
                     className={styles['name-icon']} 
-                    style={{ cursor: "pointer", position: "relative" }}
-                    onClick={() => setShowDropdown(!showDropdown)}
+                    onClick={() => navigate(`/history/${username}`)} 
+                    style={{ cursor: "pointer" }}
                 >
-                    <img src="https://cdn-icons-png.flaticon.com/512/12828/12828286.png" alt="exercise-icon"/>
-                    <p>Exercises</p>
-
-                    {showDropdown && (
-                        <div style={{
-                            position: "absolute",
-                            top: "100%",
-                            left: 0,
-                            backgroundColor: "white",
-                            color: "#1f4f2c",
-                            borderRadius: "5px",
-                            boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-                            zIndex: 999,
-                            minWidth: "180px",
-                            padding: "5px 0"
-                        }}>
-                            {units.map((unit, index) => (
-                                <div
-                                    key={index}
-                                    onClick={() => {
-                                        navigate(unit.path);
-                                        setShowDropdown(false);
-                                    }}
-                                    style={{
-                                        padding: "10px 15px",
-                                        cursor: "pointer",
-                                        fontSize: "14px"
-                                    }}
-                                    onMouseEnter={e => e.currentTarget.style.backgroundColor = "#eaf4ea"}
-                                    onMouseLeave={e => e.currentTarget.style.backgroundColor = "transparent"}
-                                >
-                                    {unit.label}
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                    <img src="https://www.pngkey.com/png/full/76-768762_pen-paper-camera-e-mail-spreadsheets-and-presentations.png" alt="history-icon"/>
+                    <p>Exercise History</p>
                 </div>
             </div>
 
