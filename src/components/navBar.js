@@ -25,6 +25,44 @@ export default function Navbar() {
         { path: "/exerciseU8", label: "Unit 08 - File" },
         { path: "/exerciseU9", label: "Unit 09 - Numpy" },
     ];
+    const handleStudyClick = async () => {
+      try {
+        const response = await fetch(`http://localhost:3000/student-score/topic-wise/${username}`);
+        const data = await response.json();
+    
+        // สร้าง Map เพื่อเข้าถึงข้อมูลตามรอบ
+        const rounds = {
+          comproExamR1: null,
+          comproExamR2: null,
+          comproExamR3: null
+        };
+    
+        if (Array.isArray(data)) {
+          data.forEach(item => {
+            if (item.scheduleName && rounds.hasOwnProperty(item.scheduleName)) {
+              rounds[item.scheduleName] = item;
+            }
+          });
+    
+          if (rounds.comproExamR3 && rounds.comproExamR3.SectionData && Object.keys(rounds.comproExamR3.SectionData).length > 0) {
+            navigate(`/suggest/${username}/comproExamR3`);
+          } else if (rounds.comproExamR2 && rounds.comproExamR2.SectionData && Object.keys(rounds.comproExamR2.SectionData).length > 0) {
+            navigate(`/suggest/${username}/comproExamR2`);
+          } else if (rounds.comproExamR1 && rounds.comproExamR1.SectionData && Object.keys(rounds.comproExamR1.SectionData).length > 0) {
+            navigate(`/suggest/${username}/comproExamR1`);
+          } else {
+            navigate(`/suggest/${username}/comproExamR1`);
+          }
+        } else {
+          navigate(`/suggest/${username}/comproExamR1`);
+        }
+      } catch (error) {
+        console.error("Error fetching exam data:", error);
+        navigate(`/suggest/${username}/comproExamR1`);
+      }
+    };
+    
+    
 
     return (
         <div className={styles['nav-container']}>
@@ -53,15 +91,16 @@ export default function Navbar() {
                     <p>Profile</p>
                 </div>
 
-                {/* Study */}
-                <div 
-                    className={styles['name-icon']} 
-                    onClick={() => navigate(`/suggest/${username}/comproExamR1`)} 
-                    style={{ cursor: "pointer" }}
-                >
-                    <img src={lightBulb} alt="lightbulb-icon"/>
-                    <p>Study</p>
-                </div>
+{/* Study */}
+<div 
+  className={styles['name-icon']} 
+  onClick={handleStudyClick}
+  style={{ cursor: "pointer" }}
+>
+  <img src={lightBulb} alt="lightbulb-icon"/>
+  <p>Study</p>
+</div>
+
 
 
 <div className={`${styles['dropdown-wrapper']} ${showDropdown ? styles['open'] : ''}`}>
