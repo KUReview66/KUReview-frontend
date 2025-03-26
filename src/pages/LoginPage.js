@@ -37,7 +37,7 @@ function LogInPage() {
             <img src={KuReviewLogo} alt="logo" className={styles['logo']} />
                 <form>
                     <div className={styles['input-ctn']}>
-                        <label htmlFor="username">Username</label>
+                        <label htmlFor="username">Username bXXXXXXXXXX</label>
                         <input id="username" type="text" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} required />
                     </div>
                     <div className={styles['input-ctn']}>
