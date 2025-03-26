@@ -14,6 +14,12 @@
   text-align: center;
   margin-bottom: 15px;
 }
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px; /* or whatever height fits */
+}
 
 .unitTitle {
   font-family: 'Nunito' !important;
