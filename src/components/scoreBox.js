@@ -74,23 +74,7 @@ function ScoreBox({ round, score: scores, username }) {
                 )}
                 <div className={style["action"]}>
 
-                    <button disabled={!hasTakenExam} onClick={() => setBtnPopup(true)} style={{marginRight: '15px'}}>Predict Grade</button>
-                    
-                    {/* <Popup trigger={btnPopup} setTrigger={setBtnPopup}>
-                        <h3>Predict Grade</h3>
-                        <div style={{ marginTop: "10px" }}>
-                            <p><strong>Lecture Test Score:</strong> {((scores.totalScore / scores.totalQuestions) * 100).toFixed(2)}%</p>
-                            <div>
-                                {predictGrade().map((prediction, index) => (
-                                    <div key={index} style={{ marginBottom: "5px" }}>
-                                        <p>
-                                            <strong>{prediction.grade}</strong> → if HW = {prediction.hw}% and Lab = {prediction.lab}% {prediction.finalScore}
-                                        </p>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </Popup> */}
+                    <button disabled={!hasTakenExam} onClick={() => setBtnPopup(true)} style={{marginRight: '15px'}}>Predict Grade</button> 
 
                     <Popup trigger={btnPopup} setTrigger={setBtnPopup}>
                         <div className={style['popup-container']}>

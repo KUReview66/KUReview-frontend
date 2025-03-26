@@ -112,7 +112,17 @@ export default function ScorePage() {
                     <div className={styles['content-container']}>
 
                         <div className={styles['content-panel']}>
-                            <CountDownPanel date={testDate}/>
+                            {
+                                testDate ? (
+                                    <CountDownPanel date={testDate}/>
+                                ) : (
+                                    <div style={{marginTop: '5rem'}}>
+                                        <h3 style={{fontSize: '75px', lineHeight: 'normal'}}>Start Strong</h3>
+                                        <p style={{textAlign: 'left'}}>Key Topics You Should Focus On</p>
+                                        <button className={styles['btn-pre-suggest']}>Get Started</button>
+                                    </div>
+                                )
+                            }
                             <div className={styles['sec-panel']}>
                                 <div className={styles["score-container"]}>
                                     <div className={styles["header"]}>

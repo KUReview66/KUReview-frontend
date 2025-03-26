@@ -5,7 +5,6 @@ import SuggestionPage from "./pages/SuggestionPage";
 import LogInPage from './pages/LoginPage'; 
 import ScorePage from './pages/ScorePage'; 
 import NotFound from "./pages/NotFound";
-import PreExamSuggest from "./pages/PreExamSuggest";
 import ExerciseU2Page from "./pages/ExerciseU2Page"
 import ExerciseU3Page from "./pages/ExerciseU3Page";
 import ExerciseU5Page from "./pages/ExerciseU5Page";
@@ -22,7 +21,6 @@ export default function App() {
       <Routes>
         <Route path="/profile/:username" element={<ProfilePage />} /> 
         <Route path="/suggest/:username/:round" element={<SuggestionPage />} /> 
-        <Route path="/pre-exam-suggestion" element={<PreExamSuggest />}/>
         <Route path="/" element={<LogInPage />} /> 
         <Route path="/score/:username" element={<ScorePage />} /> 
         <Route path="/404" element={<NotFound />}/>
