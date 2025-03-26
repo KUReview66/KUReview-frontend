@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Button, Typography, Box, CircularProgress } from "@mui/material";
+import { Button, Typography, Box } from "@mui/material";
 import Navbar from "../components/navBar";
 import styles from "../styles/Suggestion.module.css";
 import OpenAI from "openai";
@@ -12,8 +12,7 @@ import unitSubtopics from "../data/unitdata";
 import { useParams } from "react-router-dom";
 import NotFound from "./NotFound";
 import { FaRedoAlt } from "react-icons/fa";
-import axios from 'axios';
-
+import axios from "axios";
 
 const renderers = {
   code({ node, inline, className, children, ...props }) {
@@ -93,34 +92,66 @@ export default function SuggestionPage() {
     fetchScores();
   }, [username, round]);
 
-  const fetchSuggestion = async (unit, subtopicIndex = 0) => {
+  const fetchSuggestion = async (
+    unit,
+    subtopicIndex = 0,
+    autoDetect = true
+  ) => {
     setLoading(true);
     setSelectedUnit(unit);
-    setSelectedSubtopicIndex(subtopicIndex);
     setCurrentVideoIndex(0);
 
-    const subtopic = unitSubtopics[unit]?.[subtopicIndex] || unit;
     const studentScore = studentScores[unit] || 0;
     const studentId = username;
+
     try {
-      // ✅ 1. Fetch all existing suggestions for the student
-      const suggestionRes = await fetch(`http://localhost:3000/suggest/${username}`);
+      const suggestionRes = await fetch(
+        `http://localhost:3000/suggest/${username}`
+      );
       const allData = await suggestionRes.json();
-      let matched
-      console.log(allData)
-  
-      // ✅ 2. Check if current subtopic suggestion exists
-      if (allData.length > 0) {
-        matched = allData.find(
-          (item) =>
-            item.round === round &&
+
+      const filtered = allData.filter(
+        (item) => item.unit === unit && item.round === round
+      );
+
+      let selectedRecord = null;
+      if (filtered.length > 0) {
+        const incomplete = filtered.find(
+          (item) => item.status === "incomplete"
+        );
+        selectedRecord =
+          incomplete ||
+          filtered.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          )[0];
+      }
+
+      // ✅ Set subtopic from selectedRecord only if autoDetect is true
+      let subtopic = unitSubtopics[unit]?.[subtopicIndex] || unit;
+      if (autoDetect && selectedRecord) {
+        subtopic = selectedRecord.subtopic;
+        const index = unitSubtopics[unit].findIndex((s) => s === subtopic);
+        subtopicIndex = index !== -1 ? index : 0;
+      }
+
+      setSelectedSubtopicIndex(subtopicIndex);
+
+      const matched = filtered.find(
+        (item) =>
+          item.round === round &&
           item.unit === unit &&
           item.subtopic === subtopic
-        );
-      } else {
-        matched = false;
+      );
+
+      if (matched?.status === "complete") {
+        // ✅ Auto mark as answered so "Next" is enabled
+        setUserAnswers((prev) => ({
+          ...prev,
+          [subtopicIndex]:
+            matched.quiz?.answer?.charAt(0).toUpperCase() || true,
+        }));
       }
-  
+
       if (matched) {
         console.log("✅ Found suggestion from backend");
         setSuggestion(matched.content);
@@ -130,14 +161,14 @@ export default function SuggestionPage() {
         // ❌ No record found → Generate new content
         console.log("⚙️ Generating new content using OpenAI...");
         setSuggestion("⏳ Generating content...");
-  
+
         let difficultyLevel;
         if (studentScore < 40) difficultyLevel = "Beginner";
         else if (studentScore < 75) difficultyLevel = "Intermediate";
         else difficultyLevel = "Advanced";
-  
+
         const exerciseCount = studentScore < 50 ? 5 : 3;
-  
+
         const prompt = `
   The student scored ${studentScore}/100 in '${unit}'.
   Suggest content in the '${subtopic}' covering **${difficultyLevel}** difficulty levels.
@@ -151,12 +182,12 @@ export default function SuggestionPage() {
   4. **Exercises** (${exerciseCount})
   5. **Solution** for those exercises
         `;
-  
+
         const openai = new OpenAI({
           apiKey: OPENAI_API_KEY,
           dangerouslyAllowBrowser: true,
         });
-  
+
         const contentRes = await openai.chat.completions.create({
           model: "gpt-3.5-turbo",
           messages: [
@@ -165,9 +196,9 @@ export default function SuggestionPage() {
           ],
           max_tokens: 1500,
         });
-  
+
         const generatedContent = contentRes.choices[0].message.content;
-  
+
         const quizRes = await openai.chat.completions.create({
           model: "gpt-3.5-turbo",
           messages: [
@@ -179,42 +210,31 @@ export default function SuggestionPage() {
           ],
           max_tokens: 500,
         });
-  
+
         const generatedQuiz = JSON.parse(quizRes.choices[0].message.content);
         const answer = generatedQuiz.answer.trim().toUpperCase();
-  
-        // // ✅ 3. Update UI
+
         setSuggestion(generatedContent);
         setQuiz(generatedQuiz);
         setCorrectAnswer(answer);
         setLoading(false);
-        // console.log("SET")
-        // console.log(generatedContent)
-        // console.log(suggestion)
-  
-        // ✅ 4. Save to backend
-        await axios.post(
-          `http://localhost:3000/suggest`,
-          {
-            studentId,
-            round,
-            unit,
-            subtopic,
-            content: generatedContent,
-            quiz: generatedQuiz,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
 
+        // ✅ Save to backend
+        await axios.post(`http://localhost:3000/suggest`, {
+          studentId,
+          round,
+          unit,
+          subtopic,
+          content: generatedContent,
+          quiz: generatedQuiz,
+        });
 
         console.log("📨 POST sent to backend");
-  
-        // ✅ 5. Confirm it's saved by fetching again
-        const confirmRes = await fetch(`http://localhost:3000/suggest/${username}`);
+
+        // ✅ Confirm it's saved
+        const confirmRes = await fetch(
+          `http://localhost:3000/suggest/${username}`
+        );
         const confirmData = await confirmRes.json();
         const confirmMatch = confirmData.find(
           (item) =>
@@ -222,7 +242,7 @@ export default function SuggestionPage() {
             item.unit === unit &&
             item.subtopic === subtopic
         );
-  
+
         if (confirmMatch) {
           console.log("✅ Confirmed and displaying saved data");
           setSuggestion(confirmMatch.content);
@@ -230,7 +250,6 @@ export default function SuggestionPage() {
           setCorrectAnswer(confirmMatch.quiz?.answer?.trim().toUpperCase());
         } else {
           console.warn("⚠️ Couldn't confirm save, fallback to generated");
-          // fallback in case it didn’t get saved
           setSuggestion(generatedContent);
           setQuiz(generatedQuiz);
           setCorrectAnswer(answer);
@@ -242,7 +261,6 @@ export default function SuggestionPage() {
     } finally {
       setLoading(false);
     }
-    setLoading(false);
   };
 
   const handleAnswerSelection = (answer) => {
@@ -253,7 +271,6 @@ export default function SuggestionPage() {
     }
   };
   const handleNextSubtopic = async () => {
-    // First, update backend status
     try {
       await fetch(
         `http://localhost:3000/suggest/${username}/${round}/${selectedUnit}/${unitSubtopics[selectedUnit][selectedSubtopicIndex]}`,
@@ -269,8 +286,7 @@ export default function SuggestionPage() {
       console.error("❌ Failed to update progress status:", err);
     }
 
-    // Then move to the next subtopic
-    fetchSuggestion(selectedUnit, selectedSubtopicIndex + 1);
+    fetchSuggestion(selectedUnit, selectedSubtopicIndex + 1, false); // ✅ use false
   };
 
   const handleRedoUnit = async () => {
@@ -321,7 +337,7 @@ export default function SuggestionPage() {
                 {Object.keys(unitSubtopics).map((unit, index) => (
                   <Button
                     key={unit}
-                    onClick={() => fetchSuggestion(unit)}
+                    onClick={() => fetchSuggestion(unit, 0, true)}
                     className={`${styles.unitButton} ${
                       selectedUnit === unit ? styles.activeUnit : ""
                     }`}
@@ -377,9 +393,8 @@ export default function SuggestionPage() {
                     alignItems: "center",
                     gap: "8px",
                     cursor: "pointer",
-                     marginRight: "16px",
-                    marginBottom: "10px"
-          
+                    marginRight: "16px",
+                    marginBottom: "10px",
                   }}
                 >
                   <FaRedoAlt />
@@ -402,6 +417,18 @@ export default function SuggestionPage() {
                       </div>
                     ) : (
                       <>
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "flex-end",
+                          }}
+                        >
+                          <Typography className={styles.pageNumber}>
+                            Page {selectedSubtopicIndex + 1} /{" "}
+                            {unitSubtopics[selectedUnit]?.length}
+                          </Typography>
+                        </div>
+
                         <ReactMarkdown components={renderers}>
                           {suggestion}
                         </ReactMarkdown>
@@ -452,11 +479,13 @@ export default function SuggestionPage() {
                       <button
                         className={`${styles.navButton} ${styles.prevButton}`}
                         disabled={selectedSubtopicIndex === 0}
-                        onClick={() =>
-                          fetchSuggestion(
-                            selectedUnit,
-                            selectedSubtopicIndex - 1
-                          )
+                        onClick={
+                          () =>
+                            fetchSuggestion(
+                              selectedUnit,
+                              selectedSubtopicIndex - 1,
+                              false
+                            ) // <- ❌ No auto detect!
                         }
                       >
                         ◀ Previous
@@ -464,7 +493,7 @@ export default function SuggestionPage() {
                       <button
                         className={`${styles.navButton} ${styles.nextButton}`}
                         disabled={
-                          !userAnswers[selectedSubtopicIndex] ||
+                          (quiz && !userAnswers[selectedSubtopicIndex]) || // ✅ ต้องตอบ quiz ถ้ามี
                           selectedSubtopicIndex >=
                             unitSubtopics[selectedUnit].length - 1
                         }
