@@ -19,6 +19,8 @@ export default function ProfilePage() {
 const [minPerUnit, setMinPerUnit] = useState([]);
 const [maxPerUnit, setMaxPerUnit] = useState([]);
 const [unitLabels, setUnitLabels] = useState([]);
+const [roundStats, setRoundStats] = useState({});
+
 
 const fetchClassStatistics = async () => {
   try {
@@ -35,13 +37,14 @@ const fetchClassStatistics = async () => {
     const unitAverages = [];
     const unitMins = [];
     const unitMaxs = [];
+    const statisticsPerRound = {};
 
     unitNames.forEach(unit => {
       let avgSum = 0, count = 0;
       let minScores = [], maxScores = [];
 
       rounds.forEach(round => {
-        const unitData = examData[round][unit];
+        const unitData = examData[round]?.topicStatistics?.[unit];
         if (unitData) {
           avgSum += unitData.average;
           count++;
@@ -50,20 +53,30 @@ const fetchClassStatistics = async () => {
         }
       });
 
-      unitAverages.push((avgSum / count).toFixed(2));
+      unitAverages.push(count > 0 ? (avgSum / count).toFixed(2) : 0);
       minScores.length > 0 ? unitMins.push(Math.min(...minScores)) : unitMins.push(0);
       maxScores.length > 0 ? unitMaxs.push(Math.max(...maxScores)) : unitMaxs.push(0);
+    });
+
+    // collect total score stats per round
+    rounds.forEach(round => {
+      if (examData[round]?.totalScoreStatistics) {
+        statisticsPerRound[round] = examData[round].totalScoreStatistics;
+      }
     });
 
     setAvgPerUnit(unitAverages);
     setMinPerUnit(unitMins);
     setMaxPerUnit(unitMaxs);
     setUnitLabels(unitNames);
+    setRoundStats(statisticsPerRound);
 
   } catch (error) {
     console.error("❌ Error fetching class statistics:", error);
   }
 };
+
+
 
 
   useEffect(() => {
@@ -122,6 +135,9 @@ const fetchClassStatistics = async () => {
         console.error("❌ Error fetching scores:", err);
       }
     };
+
+    
+    
     const fetchStudentInfo = async () => {
       try {
         const res = await fetch(`http://localhost:3000/studentInfo/${username}`);
@@ -168,6 +184,12 @@ const fetchClassStatistics = async () => {
   };
 
   const password = localStorage.getItem('password');
+  const getExamKey = (roundName) => {
+    if (!roundName) return null;
+    const match = roundName.match(/R\d+/); // ดึงแค่ R1, R2, ...
+    return match ? `comproExam${match[0]}` : null;
+  };
+  
 
   return (
     <>
@@ -242,11 +264,24 @@ const fetchClassStatistics = async () => {
           </div>
 
           <Paper className={styles.scoreInfo}>
-            <div className={styles.scoreText}><strong>Your score:</strong> {score.find(entry => entry.round === round)?.totalScore || "N/A"} / 100</div>
-            <div className={styles.scoreText}><strong>Mean:</strong> 44.42</div>
-            <div className={styles.scoreText}><strong>Max:</strong> 77</div>
-            <div className={styles.scoreText}><strong>Min:</strong> 0</div>
-          </Paper>
+  <div className={styles.scoreText}>
+    <strong>Your score:</strong> {score.find(entry => entry.round === round)?.totalScore || "N/A"} / 100
+  </div>
+  <div className={styles.scoreText}>
+    <strong>Mean:</strong> {roundStats[getExamKey(round)]?.average ?? "N/A"}
+  </div>
+  <div className={styles.scoreText}>
+    <strong>Max:</strong> {roundStats[getExamKey(round)]?.max ?? "N/A"}
+  </div>
+  <div className={styles.scoreText}>
+    <strong>Min:</strong> {roundStats[getExamKey(round)]?.min ?? "N/A"}
+  </div>
+  <div className={styles.scoreText}>
+    <strong>SD:</strong> {roundStats[getExamKey(round)]?.standardDeviation?.toFixed(2) ?? "N/A"}
+  </div>
+</Paper>
+
+
         </div>
       </div>
     </div>)
