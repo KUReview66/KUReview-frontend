@@ -2,6 +2,7 @@ import { Progress } from "rsuite";
 import "rsuite/dist/rsuite.min.css"; 
 import styles from '../styles/StudyProgress.module.css'
 import { useEffect, useState } from "react";
+import axios from "axios";
 
 export default function StudyProgress() {
     const username = localStorage.getItem('username');
@@ -34,24 +35,46 @@ export default function StudyProgress() {
             try {
                 const response = await fetch(`http://localhost:3000/progress/${username}`);
                 const data = await response.json();
-
-                console.log('Fetched data:', data);
-
-                const progressDataObj = data[0]?.progress;
-                const progressDataArr = progressDataObj ? Object.values(progressDataObj) : [];
-
-                const avgProgress = calculateAverageProgress(progressDataArr);
-
-                setAverageProgress(avgProgress);
-                setProgress(progressDataArr);
+        
+                console.log('Fetched data:', data); 
+        
+                if (data['message']) {
+                    const body = { "studentId": username };
+                    const postResponse = await axios.post('http://localhost:3000/progress', body);
+        
+                    console.log('Post response:', postResponse.data); 
+        
+                    const progressDataObj = postResponse.data?.progress;
+                    const progressDataArr = progressDataObj ? Object.values(progressDataObj) : [];
+        
+                    console.log('Parsed post progress:', progressDataArr); 
+        
+                    setAverageProgress(calculateAverageProgress(progressDataArr));
+                    setProgress(progressDataArr);
+                } else {
+                    const putResponse = await axios.put(`http://localhost:3000/progress/${username}`);
+        
+                    console.log('Put response:', putResponse.data); 
+        
+                    const progressDataObj = putResponse.data?.updatedProgress;
+                    const progressDataArr = progressDataObj ? Object.values(progressDataObj) : [];
+        
+                    console.log('Parsed update progress:', progressDataArr);
+        
+                    setAverageProgress(calculateAverageProgress(progressDataArr));
+                    setProgress(progressDataArr);
+                }
             } catch (err) {
                 console.error(err);
                 setProgress([]);
             }
         };
-
+        
+    
         fetchProgress();
+        console.log(progress, averageProgress);
     }, [username]);
+    
 
     const getProgressMessage = (progressPercent) => {
         if (progressPercent >= 0 && progressPercent <= 20) {
