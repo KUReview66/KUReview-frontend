@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   LineChart,
   Line,
@@ -13,30 +13,11 @@ import Navbar from "../components/navBar";
 import styles from "../styles/ScoreHistory.module.css";
 import { useParams } from "react-router-dom";
 
-const mockScoreData = [
-  { round: 1, unit: 2, score: 60 },
-  { round: 2, unit: 2, score: 70 },
-  { round: 3, unit: 2, score: 80 },
-  { round: 4, unit: 2, score: 85 },
-  { round: 1, unit: 2, score: 55 },
-  { round: 2, unit: 2, score: 65 },
-  { round: 3, unit: 2, score: 72 },
-  { round: 1, unit: 3, score: 45 },
-  { round: 2, unit: 3, score: 50 },
-  { round: 3, unit: 3, score: 60 },
-  { round: 1, unit: 5, score: 68 },
-  { round: 2, unit: 5, score: 70 },
-  { round: 1, unit: 5, score: 50 },
-  { round: 2, unit: 5, score: 55 },
-  { round: 1, unit: 6, score: 40 },
-  { round: 2, unit: 6, score: 60 },
-  { round: 1, unit: 7, score: 77 },
-  { round: 2, unit: 7, score: 80 },
-];
-
 const ScoreHistoryPage = () => {
   const { username } = useParams();
-  const [selectedUnit, setSelectedUnit] = useState(1);
+  const [selectedUnit, setSelectedUnit] = useState(2); // default to Unit 2
+  const [scoreData, setScoreData] = useState([]);
+
   const unitRouteMap = {
     2: "exerciseU2",
     3: "exerciseU3",
@@ -47,16 +28,34 @@ const ScoreHistoryPage = () => {
     9: "exerciseU9",
   };
 
+  useEffect(() => {
+    const fetchScores = async () => {
+      try {
+        const res = await fetch(
+          `http://localhost:3000/exercise/score/${username}`
+        );
+        const data = await res.json();
+
+        if (Array.isArray(data)) {
+          const merged = data.flatMap((entry) => entry.scoreData);
+          setScoreData(merged);
+        }
+      } catch (err) {
+        console.error("Failed to fetch score data:", err);
+      }
+    };
+
+    fetchScores();
+  }, [username]);
+
   const handleUnitChange = (e) => {
     setSelectedUnit(Number(e.target.value));
   };
 
-  const filteredData = mockScoreData.filter(
-    (item) => item.unit === selectedUnit
-  );
+  const filteredData = scoreData.filter((item) => item.unit === selectedUnit);
 
   const highestScoresByUnit = {};
-  mockScoreData.forEach((item) => {
+  scoreData.forEach((item) => {
     if (
       !highestScoresByUnit[item.unit] ||
       item.score > highestScoresByUnit[item.unit]
@@ -70,6 +69,12 @@ const ScoreHistoryPage = () => {
       unit: Number(unit),
       highest: score,
     })
+  );
+
+  const allUnits = Object.keys(unitRouteMap).map(Number);
+  const unitsWithScores = scoreData.map((item) => item.unit);
+  const unitsWithoutScores = allUnits.filter(
+    (u) => !unitsWithScores.includes(u)
   );
 
   return (
@@ -86,64 +91,99 @@ const ScoreHistoryPage = () => {
             value={selectedUnit}
             onChange={handleUnitChange}
           >
-            {[1, 2, 3, 4, 5, 6, 7].map((unit) => (
-              <option key={unit} value={unit}>
-                Unit {unit}
-              </option>
-            ))}
+            {allUnits
+              .sort((a, b) => a - b)
+              .map((unit) => (
+                <option key={unit} value={unit}>
+                  Unit {unit}
+                </option>
+              ))}
           </select>
         </div>
 
         <div className={styles.chartBox}>
-          <ResponsiveContainer width="100%" height={300}>
-            <LineChart data={filteredData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis
-                dataKey="round"
-                label={{
-                  value: "Round",
-                  position: "insideBottomRight",
-                  offset: -5,
+          {filteredData.length > 0 ? (
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={filteredData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis
+                  dataKey="round"
+                  label={{
+                    value: "Round",
+                    position: "insideBottomRight",
+                    offset: -5,
+                  }}
+                />
+                <YAxis
+                  domain={[0, 100]}
+                  label={{ value: "Score", angle: -90, position: "insideLeft" }}
+                />
+                <Tooltip />
+                <Legend />
+                <Line
+                  type="monotone"
+                  dataKey="score"
+                  stroke="#4caf50"
+                  strokeWidth={3}
+                  dot={{ r: 4 }}
+                  activeDot={{ r: 6 }}
+                  name={`Unit ${selectedUnit}`}
+                />
+              </LineChart>
+            </ResponsiveContainer>
+          ) : (
+            <div className={styles.noScoreBox}>
+              <p>
+                No score yet for Unit {selectedUnit}. Let’s go and do it! 🚀
+              </p>
+              <button
+                onClick={() => {
+                  const route = unitRouteMap[selectedUnit];
+                  if (route) {
+                    window.location.href = `/${route}/${username}`;
+                  } else {
+                    alert("This unit doesn't have an exercise page yet.");
+                  }
                 }}
-              />
-              <YAxis
-                domain={[0, 100]}
-                label={{ value: "Score", angle: -90, position: "insideLeft" }}
-              />
-              <Tooltip />
-              <Legend />
-              <Line
-                type="monotone"
-                dataKey="score"
-                stroke="#4caf50"
-                strokeWidth={3}
-                dot={{ r: 4 }}
-                activeDot={{ r: 6 }}
-                name={`Unit ${selectedUnit}`}
-              />
-            </LineChart>
-          </ResponsiveContainer>
+                className={styles.goExerciseButton}
+              >
+                Go to Exercise
+              </button>
+            </div>
+          )}
         </div>
 
         <div className={styles.unitScoreList}>
           <h3>🔥 Highest Score by Unit</h3>
           <ul>
-            {unitScoreArray.map((u) => {
-              const isTopScore =
-                u.highest === Math.max(...unitScoreArray.map((i) => i.highest));
+            {allUnits.map((unit) => {
+              const score = highestScoresByUnit[unit];
               return (
-                <li key={u.unit} className={styles.unitScoreItem}>
-                  <span className={styles.unitScoreItem}>
-                    <strong>Unit {u.unit}:</strong> {u.highest} / 100 &nbsp;
-                    {u.highest >= 75
-                      ? "🎉 Great job!"
-                      : u.highest >= 50
-                      ? "💪 Keep going!"
-                      : "🚀 You can do it!"}
-                  </span>
+                <li key={unit} className={styles.unitScoreItem}>
+                  {score ? (
+                    <span className={styles.unitScoreText}>
+                      <strong>Unit {unit}:</strong>{" "}
+                      {score
+                        ? `${score} / 100`
+                        : "No score yet. Let’s go and do it!"}{" "}
+                      &nbsp;
+                      {score >= 75
+                        ? "🎉 Great job!"
+                        : score >= 50
+                        ? "💪 Keep going!"
+                        : score
+                        ? "🚀 You can do it!"
+                        : ""}
+                    </span>
+                  ) : (
+<span className={styles.unitScoreText}>
+<strong>Unit {unit}:</strong> No score yet. Let’s go and
+                      do it! 🚀
+                    </span>
+                  )}
                   <button
                     onClick={() => {
-                      const route = unitRouteMap[u.unit];
+                      const route = unitRouteMap[unit];
                       if (route) {
                         window.location.href = `/${route}/${username}`;
                       } else {

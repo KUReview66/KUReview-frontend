@@ -304,3 +304,28 @@ video {
   color: #888;
   font-size: 14px;
 }
+
+
+.noScoreBox {
+  padding: 20px;
+  text-align: center;
+  font-size: 18px;
+  color: #555;
+}
+
+.goExerciseButton {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #ff9800;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.goExerciseButton:hover {
+  background-color: #f57c00;
+}
+

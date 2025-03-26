@@ -51,6 +51,9 @@
   margin-bottom: 15px;
   color: #1f4f2c;
 }
+.unitScoreList li span.unitScoreText {
+  font-size: 18px !important;
+}
 
 .unitScoreList ul {
   list-style-type: none;
@@ -64,7 +67,7 @@
   align-items: center;
   padding: 10px 0;
   border-bottom: 1px solid #d4e5d2;
-  font-size: 16px;
+  font-size: 16px !important;
   font-weight: 500;
 }
 
