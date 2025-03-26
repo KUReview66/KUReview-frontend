@@ -1,13 +1,14 @@
 import { Progress } from "rsuite"; 
 import "rsuite/dist/rsuite.min.css"; 
 import styles from '../styles/StudyProgress.module.css'
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
 
 export default function StudyProgress() {
     const username = localStorage.getItem('username');
     const [progress, setProgress] = useState(null);
     const [averageProgress, setAverageProgress] = useState(0);
+    const isFetched = useRef(false);
     const status = averageProgress === 100 ? 'success' : null;
     const color = averageProgress === 100 ? '#52c41a' : '#3385ff';
     const statusUnit = (percent) => {
@@ -31,6 +32,10 @@ export default function StudyProgress() {
     
 
     useEffect(() => {
+        if (isFetched.current) return; 
+        isFetched.current = true; 
+
+
         const fetchProgress = async () => {
             try {
                 const response = await fetch(`http://localhost:3000/progress/${username}`);
@@ -72,7 +77,6 @@ export default function StudyProgress() {
         
     
         fetchProgress();
-        console.log(progress, averageProgress);
     }, [username]);
     
 
