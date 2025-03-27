@@ -108,23 +108,30 @@ export default function SuggestionPage() {
       const suggestionRes = await fetch(
         `http://localhost:3000/suggest/${username}`
       );
-      const allData = await suggestionRes.json();
+      let allData = await suggestionRes.json();
 
+      // 🧠 Handle case: backend returns message instead of array
+      if (allData.message === "No records found") {
+        console.warn("⚠️ Backend says: No records found. Generating new...");
+        allData = []; // fallback to empty array
+      } else if (!Array.isArray(allData)) {
+        console.warn("⚠️ Unexpected response from /suggest:", allData);
+        allData = [];
+      }
+      
       const filtered = allData.filter(
         (item) => item.unit === unit && item.round === round
       );
-
+      
+      
       let selectedRecord = null;
       if (filtered.length > 0) {
-        const incomplete = filtered.find(
-          (item) => item.status === "incomplete"
-        );
+        const incomplete = filtered.find((item) => item.status === "incomplete");
         selectedRecord =
           incomplete ||
-          filtered.sort(
-            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-          )[0];
+          filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
       }
+      
 
       // ✅ Set subtopic from selectedRecord only if autoDetect is true
       let subtopic = unitSubtopics[unit]?.[subtopicIndex] || unit;
@@ -136,20 +143,28 @@ export default function SuggestionPage() {
 
       setSelectedSubtopicIndex(subtopicIndex);
 
-      const matched = filtered.find(
+      const matched = allData.find(
         (item) =>
           item.round === round &&
           item.unit === unit &&
           item.subtopic === subtopic
       );
-
       if (matched?.status === "complete") {
-        // ✅ Auto mark as answered so "Next" is enabled
         setUserAnswers((prev) => ({
           ...prev,
-          [subtopicIndex]:
-            matched.quiz?.answer?.charAt(0).toUpperCase() || true,
+          [subtopicIndex]: matched.quiz?.answer?.charAt(0).toUpperCase() || true,
         }));
+      }
+      
+      if(matched){
+        if (matched?.status === "complete") {
+          // ✅ Auto mark as answered so "Next" is enabled
+          setUserAnswers((prev) => ({
+            ...prev,
+            [subtopicIndex]:
+              matched.quiz?.answer?.charAt(0).toUpperCase() || true,
+          }));
+        }
       }
 
       if (matched) {
