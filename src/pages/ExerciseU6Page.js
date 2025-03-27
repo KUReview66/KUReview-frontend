@@ -8,6 +8,28 @@ import { getImprovementSuggestion } from "../components/improvementGPT";
 import { Box, Button, Typography, CircularProgress } from "@mui/material";
 import { FaRedoAlt } from "react-icons/fa";
 
+const highlightCode = (text) => {
+  const parts = text.split(/(`[^`]+`)/g); // หาส่วนที่อยู่ใน backtick
+  return parts.map((part, index) => {
+    if (part.startsWith("`") && part.endsWith("`")) {
+      return (
+        <code
+          key={index}
+          style={{
+            backgroundColor: "#f4f4f4",
+            fontFamily: "monospace",
+            padding: "2px 5px",
+            borderRadius: "4px",
+            color: "#c7254e",
+          }}
+        >
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+    return <span className={styles.quizQuestion} key={index}>{part}</span>;
+  });
+};
 
 const ExerciseU6Page = () => {
   const unitKey = "06-Repetition";
@@ -317,9 +339,8 @@ const ExerciseU6Page = () => {
             <Typography variant="h6" className={styles.quizTitle}>
               Question {currentIndex + 1} / 10
             </Typography>
-
             <Typography className={styles.quizQuestion}>
-              {questions[currentIndex].question}
+              {highlightCode(questions[currentIndex].question)}
             </Typography>
 
             <div className={styles.quizOptions}>

@@ -8,6 +8,28 @@ import { Box, Button, Typography, CircularProgress } from "@mui/material";
 import { FaRedoAlt } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 
+const highlightCode = (text) => {
+  const parts = text.split(/(`[^`]+`)/g); // หาส่วนที่อยู่ใน backtick
+  return parts.map((part, index) => {
+    if (part.startsWith("`") && part.endsWith("`")) {
+      return (
+        <code
+          key={index}
+          style={{
+            backgroundColor: "#f4f4f4",
+            fontFamily: "monospace",
+            padding: "2px 5px",
+            borderRadius: "4px",
+            color: "#c7254e",
+          }}
+        >
+          {part.slice(1, -1)}
+        </code>
+      );
+    }
+    return <span className={styles.quizQuestion} key={index}>{part}</span>;
+  });
+};
 
 const ExerciseU9Page = () => {
   const unitKey = "09-Numpy";
@@ -315,7 +337,7 @@ const ExerciseU9Page = () => {
             </Typography>
 
             <Typography className={styles.quizQuestion}>
-              {questions[currentIndex].question}
+              {highlightCode(questions[currentIndex].question)}
             </Typography>
 
             <div className={styles.quizOptions}>
