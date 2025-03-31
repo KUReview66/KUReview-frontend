@@ -12,6 +12,7 @@ import {
 import Navbar from "../components/navBar";
 import styles from "../styles/ScoreHistory.module.css";
 import { useParams } from "react-router-dom";
+import NotFound from "./NotFound";
 
 const ScoreHistoryPage = () => {
   const { username } = useParams();
@@ -70,7 +71,7 @@ const ScoreHistoryPage = () => {
       highest: score,
     })
   );
-
+  const password = localStorage.getItem('password');
   const allUnits = Object.keys(unitRouteMap).map(Number);
   const unitsWithScores = scoreData.map((item) => item.unit);
   const unitsWithoutScores = allUnits.filter(
@@ -78,6 +79,11 @@ const ScoreHistoryPage = () => {
   );
 
   return (
+            <>
+            {
+                password === '' ? (
+                    <NotFound />
+                ) : (
     <div style={{ display: "flex" }}>
       <Navbar />
 
@@ -200,6 +206,9 @@ const ScoreHistoryPage = () => {
         </div>
       </div>
     </div>
+                )
+              }
+              </>
   );
 };
 
