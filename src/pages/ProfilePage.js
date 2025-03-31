@@ -20,6 +20,8 @@ const [minPerUnit, setMinPerUnit] = useState([]);
 const [maxPerUnit, setMaxPerUnit] = useState([]);
 const [unitLabels, setUnitLabels] = useState([]);
 const [roundStats, setRoundStats] = useState({});
+const [allTopicStats, setAllTopicStats] = useState({});
+
 
 
 const fetchClassStatistics = async () => {
@@ -28,54 +30,52 @@ const fetchClassStatistics = async () => {
     const result = await response.json();
 
     const examData = result.data;
-    const rounds = ["comproExamR1", "comproExamR2"];
-    const unitNames = [
-      "02-Basic", "03-Subroutine", "05-Selection",
-      "06-Repetition", "07-List", "08-File", "09-Numpy"
-    ];
 
-    const unitAverages = [];
-    const unitMins = [];
-    const unitMaxs = [];
-    const statisticsPerRound = {};
-
-    unitNames.forEach(unit => {
-      let avgSum = 0, count = 0;
-      let minScores = [], maxScores = [];
-
-      rounds.forEach(round => {
-        const unitData = examData[round]?.topicStatistics?.[unit];
-        if (unitData) {
-          avgSum += unitData.average;
-          count++;
-          minScores.push(unitData.min);
-          maxScores.push(unitData.max);
-        }
-      });
-
-      unitAverages.push(count > 0 ? (avgSum / count).toFixed(2) : 0);
-      minScores.length > 0 ? unitMins.push(Math.min(...minScores)) : unitMins.push(0);
-      maxScores.length > 0 ? unitMaxs.push(Math.max(...maxScores)) : unitMaxs.push(0);
+    setAllTopicStats({
+      comproExamR1: examData.comproExamR1?.topicStatistics || {},
+      comproExamR2: examData.comproExamR2?.topicStatistics || {},
+      comproExamR3: examData.comproExamR3?.topicStatistics || {}
     });
 
-    // collect total score stats per round
-    rounds.forEach(round => {
-      if (examData[round]?.totalScoreStatistics) {
-        statisticsPerRound[round] = examData[round].totalScoreStatistics;
-      }
+    setRoundStats({
+      comproExamR1: examData.comproExamR1?.totalScoreStatistics || {},
+      comproExamR2: examData.comproExamR2?.totalScoreStatistics || {},
+      comproExamR3: examData.comproExamR3?.totalScoreStatistics || {}
     });
-
-    setAvgPerUnit(unitAverages);
-    setMinPerUnit(unitMins);
-    setMaxPerUnit(unitMaxs);
-    setUnitLabels(unitNames);
-    setRoundStats(statisticsPerRound);
 
   } catch (error) {
     console.error("❌ Error fetching class statistics:", error);
   }
 };
 
+
+useEffect(() => {
+  if (!round || !allTopicStats) return;
+
+  const examKey = getExamKey(round); // e.g., "comproExamR1"
+  const topics = allTopicStats[examKey] || {};
+
+  const unitNames = [
+    "02-Basic", "03-Subroutine", "05-Selection",
+    "06-Repetition", "07-List", "08-File", "09-Numpy"
+  ];
+
+  const avg = [];
+  const min = [];
+  const max = [];
+
+  unitNames.forEach((unit) => {
+    const stat = topics[unit];
+    avg.push(stat ? stat.average.toFixed(2) : 0);
+    min.push(stat ? stat.min : 0);
+    max.push(stat ? stat.max : 0);
+  });
+
+  setAvgPerUnit(avg);
+  setMinPerUnit(min);
+  setMaxPerUnit(max);
+  setUnitLabels(unitNames);
+}, [round, allTopicStats]);
 
 
 

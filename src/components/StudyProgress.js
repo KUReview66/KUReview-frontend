@@ -40,32 +40,23 @@ export default function StudyProgress() {
             try {
                 const response = await fetch(`http://localhost:3000/progress/${username}`);
                 const data = await response.json();
-        
-                console.log('Fetched data:', data); 
-        
+                
                 if (data['message']) {
                     const body = { "studentId": username };
                     const postResponse = await axios.post('http://localhost:3000/progress', body);
         
-                    console.log('Post response:', postResponse.data); 
         
                     const progressDataObj = postResponse.data?.progress;
                     const progressDataArr = progressDataObj ? Object.values(progressDataObj) : [];
-        
-                    console.log('Parsed post progress:', progressDataArr); 
-        
+                
                     setAverageProgress(calculateAverageProgress(progressDataArr));
                     setProgress(progressDataArr);
                 } else {
                     const putResponse = await axios.put(`http://localhost:3000/progress/${username}`);
-        
-                    console.log('Put response:', putResponse.data); 
-        
+
                     const progressDataObj = putResponse.data?.updatedProgress;
                     const progressDataArr = progressDataObj ? Object.values(progressDataObj) : [];
-        
-                    console.log('Parsed update progress:', progressDataArr);
-        
+            
                     setAverageProgress(calculateAverageProgress(progressDataArr));
                     setProgress(progressDataArr);
                 }

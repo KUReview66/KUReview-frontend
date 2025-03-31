@@ -50,9 +50,6 @@ export default function SuggestionPage() {
   const [userAnswers, setUserAnswers] = useState({});
   const [fetchingScores, setFetchingScores] = useState(true);
   const [currentVideoIndex, setCurrentVideoIndex] = useState(0);
-  useEffect(() => {
-    console.log("✅ Suggestion updated:", suggestion);
-  }, [suggestion]);
 
   useEffect(() => {
     const fetchScores = async () => {
@@ -168,13 +165,11 @@ export default function SuggestionPage() {
       }
 
       if (matched) {
-        console.log("✅ Found suggestion from backend");
         setSuggestion(matched.content);
         setQuiz(matched.quiz);
         setCorrectAnswer(matched.quiz?.answer?.trim().toUpperCase());
       } else {
-        // ❌ No record found → Generate new content
-        console.log("⚙️ Generating new content using OpenAI...");
+        // No record found  Generate new content
         setSuggestion("⏳ Generating content...");
 
         let difficultyLevel;
@@ -244,7 +239,6 @@ export default function SuggestionPage() {
           quiz: generatedQuiz,
         });
 
-        console.log("📨 POST sent to backend");
 
         // ✅ Confirm it's saved
         const confirmRes = await fetch(
@@ -259,7 +253,6 @@ export default function SuggestionPage() {
         );
 
         if (confirmMatch) {
-          console.log("✅ Confirmed and displaying saved data");
           setSuggestion(confirmMatch.content);
           setQuiz(confirmMatch.quiz);
           setCorrectAnswer(confirmMatch.quiz?.answer?.trim().toUpperCase());
@@ -296,7 +289,6 @@ export default function SuggestionPage() {
           },
         }
       );
-      console.log("✅ Status updated to complete");
     } catch (err) {
       console.error("❌ Failed to update progress status:", err);
     }
