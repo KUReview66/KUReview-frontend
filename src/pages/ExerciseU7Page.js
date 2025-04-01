@@ -325,8 +325,8 @@ const ExerciseU7Page = () => {
           <>
             <div style={{ display: "flex" }}>
               <Navbar />
-              <div className={styles.container}>
-                <Typography variant="h5" className={styles.unitTitle}>
+              <div className={styles.container} style={{padding: '2rem', width: '82vw'}}>
+                <Typography variant="h5" className={styles.unitTitle} style={{padding: '2rem'}}>
                   Unit: {unitKey}
                 </Typography>
 
