@@ -3,7 +3,6 @@ import { Button, Typography, Box } from "@mui/material";
 import Navbar from "../components/navBar";
 import styles from "../styles/Suggestion.module.css";
 import OpenAI from "openai";
-import { OPENAI_API_KEY } from "../";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
