@@ -29,7 +29,7 @@ export default function ProfilePage() {
 
   const fetchClassStatistics = async () => {
     try {
-      const response = await fetch("http://localhost:3000/score/statistic/64");
+      const response = await fetch("https://ku-review-backend-wvt2.vercel.app/score/statistic/64");
       const result = await response.json();
 
       const examData = result.data;
@@ -92,7 +92,7 @@ export default function ProfilePage() {
     const fetchScores = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/student-score/topic-wise/${username}`
+          `https://ku-review-backend-wvt2.vercel.app/student-score/topic-wise/${username}`
         );
 
         if (!response.ok) {
@@ -143,7 +143,7 @@ export default function ProfilePage() {
     const fetchStudentInfo = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3000/studentInfo/${username}`
+          `https://ku-review-backend-wvt2.vercel.app/studentInfo/${username}`
         );
         const data = await res.json();
         const student = data[0]?.data?.user?.student;

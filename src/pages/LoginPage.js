@@ -21,7 +21,7 @@ function LogInPage() {
 
 
         try {
-            const response = await axios.post('http://localhost:3000/login', loginData);
+            const response = await axios.post('https://ku-review-backend-wvt2.vercel.app/login', loginData);
             localStorage.setItem('username', username);
             localStorage.setItem('password', password);
             navigate(`score/${username}`);

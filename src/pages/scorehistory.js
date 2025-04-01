@@ -33,7 +33,7 @@ const ScoreHistoryPage = () => {
     const fetchScores = async () => {
       try {
         const res = await fetch(
-          `http://localhost:3000/exercise/score/${username}`
+          `https://ku-review-backend-wvt2.vercel.app/exercise/score/${username}`
         );
         const data = await res.json();
 

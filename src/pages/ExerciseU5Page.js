@@ -86,7 +86,7 @@ const ExerciseU5Page = () => {
 
     const fetchInitialData = async () => {
       const res = await fetch(
-        `http://localhost:3000/exercise/score/${studentId}`
+        `https://ku-review-backend-wvt2.vercel.app/exercise/score/${studentId}`
       );
       const data = await res.json();
 
@@ -94,7 +94,7 @@ const ExerciseU5Page = () => {
         fetchQuestions();
       } else {
         const current = await fetch(
-          `http://localhost:3000/exercise/current/${studentId}/${unitKey}`
+          `https://ku-review-backend-wvt2.vercel.app/exercise/current/${studentId}/${unitKey}`
         );
         const currentData = await current.json();
 
@@ -203,13 +203,13 @@ const ExerciseU5Page = () => {
 
     try {
       const scoreRes = await fetch(
-        `http://localhost:3000/exercise/score/${studentId}`
+        `https://ku-review-backend-wvt2.vercel.app/exercise/score/${studentId}`
       );
       const scoreData = await scoreRes.json();
 
       if (scoreData.message === "No records found") {
         // First time for this student → POST new doc
-        await fetch("http://localhost:3000/exercise/score", {
+        await fetch("https://ku-review-backend-wvt2.vercel.app/exercise/score", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -243,7 +243,7 @@ const ExerciseU5Page = () => {
         targetDocId = found ? found._id : scoreData[0]._id;
 
         // ⬆️ PUT to existing document
-        await fetch(`http://localhost:3000/exercise/score/${studentId}`, {
+        await fetch(`https://ku-review-backend-wvt2.vercel.app/exercise/score/${studentId}`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -266,14 +266,14 @@ const ExerciseU5Page = () => {
 
     try {
       if (isFirstRound) {
-        await fetch("http://localhost:3000/exercise/current", {
+        await fetch("https://ku-review-backend-wvt2.vercel.app/exercise/current", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(currentPayload),
         });
       } else {
         await fetch(
-          `http://localhost:3000/exercise/current/${studentId}/${unitKey}`,
+          `https://ku-review-backend-wvt2.vercel.app/exercise/current/${studentId}/${unitKey}`,
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },

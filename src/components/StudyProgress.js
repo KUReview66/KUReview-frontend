@@ -40,14 +40,14 @@ export default function StudyProgress() {
     const fetchProgress = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/progress/${username}`
+          `https://ku-review-backend-wvt2.vercel.app/progress/${username}`
         );
         const data = await response.json();
 
         if (data["message"]) {
           const body = { studentId: username };
           const postResponse = await axios.post(
-            "http://localhost:3000/progress",
+            "https://ku-review-backend-wvt2.vercel.app/progress",
             body
           );
 
@@ -60,7 +60,7 @@ export default function StudyProgress() {
           setProgress(progressDataArr);
         } else {
           const putResponse = await axios.put(
-            `http://localhost:3000/progress/${username}`
+            `https://ku-review-backend-wvt2.vercel.app/progress/${username}`
           );
 
           const progressDataObj = putResponse.data?.updatedProgress;

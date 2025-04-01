@@ -55,7 +55,7 @@ export default function SuggestionPage() {
     const fetchScores = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/student-score/topic-wise/${username}`
+          `https://ku-review-backend-wvt2.vercel.app/student-score/topic-wise/${username}`
         );
         const data = await response.json();
 
@@ -103,7 +103,7 @@ export default function SuggestionPage() {
 
     try {
       const suggestionRes = await fetch(
-        `http://localhost:3000/suggest/${username}`
+        `https://ku-review-backend-wvt2.vercel.app/suggest/${username}`
       );
       let allData = await suggestionRes.json();
 
@@ -230,7 +230,7 @@ export default function SuggestionPage() {
         setLoading(false);
 
         // ✅ Save to backend
-        await axios.post(`http://localhost:3000/suggest`, {
+        await axios.post(`https://ku-review-backend-wvt2.vercel.app/suggest`, {
           studentId,
           round,
           unit,
@@ -242,7 +242,7 @@ export default function SuggestionPage() {
 
         // ✅ Confirm it's saved
         const confirmRes = await fetch(
-          `http://localhost:3000/suggest/${username}`
+          `https://ku-review-backend-wvt2.vercel.app/suggest/${username}`
         );
         const confirmData = await confirmRes.json();
         const confirmMatch = confirmData.find(
@@ -281,7 +281,7 @@ export default function SuggestionPage() {
   const handleNextSubtopic = async () => {
     try {
       await fetch(
-        `http://localhost:3000/suggest/${username}/${round}/${selectedUnit}/${unitSubtopics[selectedUnit][selectedSubtopicIndex]}`,
+        `https://ku-review-backend-wvt2.vercel.app/suggest/${username}/${round}/${selectedUnit}/${unitSubtopics[selectedUnit][selectedSubtopicIndex]}`,
         {
           method: "PUT",
           headers: {
@@ -307,7 +307,7 @@ export default function SuggestionPage() {
 
     try {
       const res = await fetch(
-        `http://localhost:3000/suggest-delete/${username}/${round}/${selectedUnit}`,
+        `https://ku-review-backend-wvt2.vercel.app/suggest-delete/${username}/${round}/${selectedUnit}`,
         { method: "DELETE" }
       );
 

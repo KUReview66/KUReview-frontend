@@ -26,7 +26,7 @@ export default function ScorePage() {
     const fetchScores = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/student-score/topic-wise/${username}`
+          `https://ku-review-backend-wvt2.vercel.app/student-score/topic-wise/${username}`
         );
         const data = await response.json();
 
