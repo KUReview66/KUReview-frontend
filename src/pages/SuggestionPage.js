@@ -195,7 +195,7 @@ export default function SuggestionPage() {
   4. **Exercises** (${exerciseCount})
   5. **Solution** for those exercises
         `;
-        const promt2 = `Generate a multiple-choice quiz with a correct answer for '${subtopic}'. Format as JSON {"question": "...", "options": ["A: ...", "B: ...", "C: ...", "D: ..."], "answer": "A" or "B" or "C" or "D"}`;
+        const prompt2 = `Generate a multiple-choice quiz with a correct answer for '${subtopic}'. Format as pure JSON only. Do not include \`\`\` or explanations. Output example: {"question": "...", "options": ["A: ...", "B: ...", "C: ...", "D: ..."], "answer": "A"}`;
 
         const openai = new OpenAI({
           apiKey: OPENAI_API_KEY,
@@ -210,7 +210,7 @@ export default function SuggestionPage() {
           { role: "system", content: "You are an AI quiz generator." },
           {
             role: "user",
-            content: promt2,
+            content: prompt2,
           },
         ];
         console.time("openai");
@@ -222,7 +222,7 @@ export default function SuggestionPage() {
             max_tokens: 1500,
           }),
           openai.chat.completions.create({
-            model: "gpt-3.5-turbo",
+            model: "gpt-4o",
             messages: mes2,
             max_tokens: 500,
           }),
@@ -230,29 +230,40 @@ export default function SuggestionPage() {
         console.timeEnd("openai");
         const generatedContent = contentRes.choices[0].message.content;
 
-        const generatedQuiz = JSON.parse(quizRes.choices[0].message.content);
+        const rawQuizText = quizRes.choices[0].message.content;
+        const cleanedResponse = rawQuizText
+          .replace(/^```json\s*/i, '')
+          .replace(/^```/, '')
+          .replace(/\n```$/, '')
+          .trim();
+        
+        const generatedQuiz = JSON.parse(cleanedResponse);
         const answer = generatedQuiz.answer.trim().toUpperCase();
+
 
         setSuggestion(generatedContent);
         setQuiz(generatedQuiz);
         setCorrectAnswer(answer);
         setLoading(false);
 
-// Save suggestion async
-setTimeout(async () => {
-  try {
-    await axios.post(`https://ku-review-backend-wvt2.vercel.app/suggest`, {
-      studentId,
-      round,
-      unit,
-      subtopic,
-      content: generatedContent,
-      quiz: generatedQuiz,
-    });
-  } catch (err) {
-    console.error("❌ Failed to save suggestion:", err);
-  }
-}, 0);
+        // Save suggestion async
+        setTimeout(async () => {
+          try {
+            await axios.post(
+              `https://ku-review-backend-wvt2.vercel.app/suggest`,
+              {
+                studentId,
+                round,
+                unit,
+                subtopic,
+                content: generatedContent,
+                quiz: generatedQuiz,
+              }
+            );
+          } catch (err) {
+            console.error("❌ Failed to save suggestion:", err);
+          }
+        }, 0);
 
         // ✅ Confirm it's saved
         const confirmRes = await fetch(
