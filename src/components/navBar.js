@@ -1,47 +1,189 @@
-import KuReviewLogo from "../logo.png";
-import { useState, useRef } from "react";
+import React, { useState } from "react";
+import KuReviewLogo from "../logo-white.png";
+import lightBulb from "../idea-48.png";
 import styles from "../styles/NavBar.module.css";
+import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
-    const navRef = useRef();
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+  const username = localStorage.getItem("username") || "guest";
+  const [showDropdown, setShowDropdown] = useState(false);
 
-    const toggleDropdown = () => {
-        setIsDropdownOpen((prev) => !prev);
-    };
+  const handleLogout = (e) => {
+    e.preventDefault();
+    localStorage.setItem("username", "");
+    localStorage.setItem("password", "");
+    navigate("/");
+  };
 
-    return (
-        <header>
-        <a href="/score" style={{ marginLeft: '-30px' }}>
-            <img src={KuReviewLogo} alt="logo" />
-        </a>
-        <nav ref={navRef}>
-            <a href="/suggest">Suggestion</a>
+  const units = [
+    { path: "/exerciseU2", label: "Unit 02 - Basic" },
+    { path: "/exerciseU3", label: "Unit 03 - Subroutine" },
+    { path: "/exerciseU5", label: "Unit 05 - Selection" },
+    { path: "/exerciseU6", label: "Unit 06 - Repetition" },
+    { path: "/exerciseU7", label: "Unit 07 - List" },
+    { path: "/exerciseU8", label: "Unit 08 - File" },
+    { path: "/exerciseU9", label: "Unit 09 - Numpy" },
+  ];
+  const handleStudyClick = async () => {
+    try {
+      const response = await fetch(
+        `https://ku-review-backend-wvt2.vercel.app/student-score/topic-wise/${username}`
+      );
+      const data = await response.json();
 
-            <div className={`${styles["profile"]} ${styles["large-screen-only"]}`}>
-                <a href="/profile">Profile</a>
-                <a href="/">Logout</a>
-            </div>
+      const rounds = {
+        comproExamR1: null,
+        comproExamR2: null,
+        comproExamR3: null,
+      };
 
-            <div className={`${styles["profile"]} ${styles["small-screen-only"]}`}>
-                <button 
-                    className={styles["profile-btn"]} 
-                    onClick={toggleDropdown} 
-                    style={{ background: 'transparent', border: 'none', cursor: 'pointer', marginTop: '3rem' }}
+      if (Array.isArray(data)) {
+        data.forEach((item) => {
+          if (item.scheduleName && rounds.hasOwnProperty(item.scheduleName)) {
+            rounds[item.scheduleName] = item;
+          }
+        });
+
+        if (
+          rounds.comproExamR3 &&
+          rounds.comproExamR3.SectionData &&
+          Object.keys(rounds.comproExamR3.SectionData).length > 0
+        ) {
+          navigate(`/suggest/${username}/comproExamR3`);
+        } else if (
+          rounds.comproExamR2 &&
+          rounds.comproExamR2.SectionData &&
+          Object.keys(rounds.comproExamR2.SectionData).length > 0
+        ) {
+          navigate(`/suggest/${username}/comproExamR2`);
+        } else if (
+          rounds.comproExamR1 &&
+          rounds.comproExamR1.SectionData &&
+          Object.keys(rounds.comproExamR1.SectionData).length > 0
+        ) {
+          navigate(`/suggest/${username}/comproExamR1`);
+        } else {
+          navigate(`/suggest/${username}/comproExamR1`);
+        }
+      } else {
+        navigate(`/suggest/${username}/comproExamR1`);
+      }
+    } catch (error) {
+      console.error("Error fetching exam data:", error);
+      navigate(`/suggest/${username}/comproExamR1`);
+    }
+  };
+
+  return (
+    <div className={styles["nav-container"]}>
+      <div className={styles["nav-item"]}>
+        {/* KUReview Logo → go to score page */}
+        <div
+          onClick={() => navigate(`/score/${username}`)}
+          style={{ cursor: "pointer" }}
+        >
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <img
+              src={KuReviewLogo}
+              alt="logo"
+              style={{ width: "140px", height: "auto", margin: "10px" }}
+            />
+          </div>{" "}
+        </div>
+
+        {/* Profile */}
+        <div
+          className={styles["name-icon"]}
+          onClick={() => navigate(`/profile/${username}`)}
+          style={{ cursor: "pointer" }}
+        >
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/12828/12828286.png"
+            alt="profile-icon"
+          />
+          <p>Profile</p>
+        </div>
+
+        {/* Study */}
+        <div
+          className={styles["name-icon"]}
+          onClick={handleStudyClick}
+          style={{ cursor: "pointer" }}
+        >
+          <img src={lightBulb} alt="lightbulb-icon" />
+          <p>Study</p>
+        </div>
+
+        <div
+          className={`${styles["dropdown-wrapper"]} ${
+            showDropdown ? styles["open"] : ""
+          }`}
+        >
+          <div
+            className={styles["name-icon"]}
+            style={{ cursor: "pointer" }}
+            onClick={() => setShowDropdown(!showDropdown)}
+          >
+            <img
+              src="https://upload.wikimedia.org/wikipedia/commons/3/3e/White_pencil.png"
+              alt="exercise-icon"
+            />
+            <p>Exercises</p>
+          </div>
+
+          {showDropdown && (
+            <div className={styles["dropdown-menu"]}>
+              {units.map((unit, index) => (
+                <div
+                  key={index}
+                  className={styles["dropdown-item"]}
+                  onClick={() => {
+                    navigate(`${unit.path}/${username}`);
+                    setShowDropdown(false);
+                  }}
                 >
-                    <img src="https://cdn-icons-png.flaticon.com/512/8847/8847419.png" alt="profile-logo" style={{width: '30px'}}/>
-                    <i 
-                    className={`bi ${isDropdownOpen ? 'bi-chevron-up' : 'bi-chevron-down'}`} 
-                    style={{ marginLeft: '5px' }}
-                    ></i>
-                </button>
-
-                <div className={`${styles.dropdown} ${isDropdownOpen ? styles.show : ''}`}>
-                    <a href="/profile">View Profile</a>
-                    <a href="/">Log Out</a>
+                  {unit.label}
                 </div>
+              ))}
             </div>
-        </nav>
-        </header>
-    );
+          )}
+        </div>
+
+        {/* history */}
+        <div
+          className={styles["name-icon"]}
+          onClick={() => navigate(`/history/${username}`)}
+          style={{ cursor: "pointer" }}
+        >
+          <img
+            src="https://www.pngkey.com/png/full/76-768762_pen-paper-camera-e-mail-spreadsheets-and-presentations.png"
+            alt="history-icon"
+          />
+          <p>Exercise History</p>
+        </div>
+      </div>
+
+      <div className={styles["spacer"]}></div>
+
+      {/* Logout */}
+      <div className={styles["nav-item"]}>
+        <a href="/" onClick={handleLogout}>
+          <div className={styles["name-icon"]}>
+            <img
+              src="https://images.freeimages.com/clg/images/26/261833/white-clarity-shutdown-icon_f?h=350"
+              alt="logout-logo"
+            />
+            <p>Logout</p>
+          </div>
+        </a>
+      </div>
+    </div>
+  );
 }

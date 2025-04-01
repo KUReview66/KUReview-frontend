@@ -1,0 +1,43 @@
+.content-container {
+    display: flex;
+    margin-right: auto;
+    margin-left: auto;
+    padding: 1rem;
+}
+
+.content-panel {
+    width: 87%;
+    margin-top: 2rem;
+}
+
+.header {
+    margin-bottom: 2rem;
+}
+
+.sec-panel {
+    display: flex;
+    margin-top: 2rem;
+    justify-content: space-between;
+    padding: 2rem 2rem 2rem 0;
+    align-items: center;
+}
+
+.score-container {
+    width: 100%;
+    padding: 2rem;
+    border: #B8B8B8 1px solid;
+    padding-top: 1rem;
+    border-radius: 20px;
+}
+
+.study-progress {
+    margin-top: 2rem;
+}
+
+.btn-pre-suggest {
+    background-color: #6F9C5A;
+    color: white;
+    padding: 10px 1rem;
+    border-radius: 15px;
+    margin-top: 15px;
+}

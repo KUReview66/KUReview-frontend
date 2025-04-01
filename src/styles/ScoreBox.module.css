@@ -1,8 +1,5 @@
 .container {
-    border: #B8B8B8 1px solid;
-    border-radius: 20px;
     padding: 1rem;
-    margin-bottom: 2rem;
 }
 
 .score-header {
@@ -22,8 +19,101 @@
     cursor: pointer;
 }
 
-.score-topic {
+.disabledButton {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+}
+
+.score {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    justify-content: space-evenly;
+}
+
+.score-item {
+    margin-top: 2rem;
+}
+
+.popup-container {
+    padding: 20px;
+    max-width: 450px;
+    font-family: Arial, sans-serif;
+    color: #333;
+    margin-left: 70px;
+
+    
+}
+
+.popup-title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+    color: #4A90E2;
+}
+
+.lecture-score-container {
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    padding: 15px;
+    margin-bottom: 20px;
+    text-align: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.lecture-score-label {
+    margin: 0;
+    font-size: 16px;
+}
+
+.lecture-score-value {
+    font-size: 26px;
+    font-weight: bold;
+    color: #52c41a;
+    margin: 8px 0 0;
+}
+
+.predictions-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    overflow: auto;
+}
+
+.prediction-card {
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 15px;
+    box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+}
+
+.prediction-grade {
+    font-size: 20px;
+    font-weight: bold;
+    color: #4A90E2;
+    min-width: 50px;
+}
+
+.prediction-details {
+    flex-grow: 1;
+    font-size: 14px;
+    color: #666;
+}
+
+.prediction-details ul {
+    padding-left: 16px;
+    margin: 5px 0;
+}
+
+.prediction-details li {
+    margin-bottom: 4px;
+}
+
+.final-score-text {
+    font-weight: bold;
+    color: #333;
+    margin-top: 10px;
 }

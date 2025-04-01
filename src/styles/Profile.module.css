@@ -1,19 +1,25 @@
 /* Profile.module.css */
 .container {
   font-family: 'Nunito', sans-serif;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
+  display: flex;
 }
 
 .flexContainer {
   display: flex;
-  justify-content: space-between; /* Creates two columns */
-  gap: 30px; /* Adds space between columns */
-  flex-wrap: wrap; /* Ensures the content wraps on smaller screens */
+  justify-content: center; 
+  flex-wrap: wrap; 
+  width: 83%;
+  margin-top: 3rem;
+  margin-left: 0;
+}
+.MuiPaper-root {
+  width: 100% !important;
 }
 
+
 .leftColumn {
+  border-right: 2px solid #ccc;
+  margin-right: 50px;
   flex: 1;
   display: flex;
   flex-direction: column;
@@ -80,9 +86,10 @@
 /* Score Info box */
 .container .scoreInfo {
   padding: 15px 30px;
-  background-color: #f8f2be; /* Light yellow */
+  background-color: #0a451b;
   border-radius: 8px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  color: white;
   display: flex;
   flex-direction: column;
   align-items: center;

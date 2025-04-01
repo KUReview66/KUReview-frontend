@@ -1,82 +1,326 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:ital,wght@0,200..1000;1,200..1000&display=swap');
+
 .container {
-    font-family: 'Nunito', sans-serif !important;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-  }
-  
+  font-family: 'Nunito' !important;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 🔹 Unit Section */
+.unitSection {
+  text-align: center;
+  margin-bottom: 15px;
+}
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 300px; /* or whatever height fits */
+}
+
+.unitTitle {
+  font-family: 'Nunito' !important;
+  font-size: 28px !important;
+  font-weight: bold !important;
+  margin-bottom: 10px !important;
+  text-align: center !important;
+  width: 100%;
+}
+
+.unitPrompt{
+  margin-top: 50px !important;
+  font-size: 20px !important;
+  text-align: center;
+  font-weight: bold !important;
+}
+/* 🔹 Unit Buttons */
+.unitButtonsContainer {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  flex-wrap: wrap;
+  margin-bottom: 25px; /* Increased margin for more space */
+  border-bottom: 2px solid #ccc; /* Horizontal line below buttons */
+  padding-bottom: 10px; /* Add padding to push the line further down */
+}
+
+.unitButton {
+  background-color: #f4f4f4 !important;
+  color: black !important;
+  /* font-weight: bold !important; */
+  text-transform: none !important;
+  padding: 12px 25px !important;
+  border-radius: 5px !important;
+  /* border: 1px solid #a6a2a2 !important; */
+  transition: background-color 0.3s ease !important;
+  min-width: 150px !important;
+}
+
+.unitButton:hover {
+  background-color: #e0e0e0;
+}
+
+.activeUnit {
+  background-color: #d5d6d3 !important;
+  color: rgb(58, 57, 57) !important;
+}
+
+
+/* 🔹 Tab Navigation */
+.tabContainer {
+  display: flex;
+  justify-content: left;
+  gap: 10px;
+  margin-top: 20px;
+  margin-left: 2%;
+}
+
+.tab {
+  background-color: #fdf9c2;
+  border: black;
+  padding: 12px 20px;
+  cursor: pointer;
+  font-weight: bold;
+  border-radius: 5px 5px 0 0;
+  transition: background 0.3s ease;
+}
+
+.activeTab {
+  background-color: #fffdf1;
+}
+
+/* 🔹 Content Box */
+.suggestionBox {
+  background-color: #f8f8f8;
+  padding: 20px;
+  border-radius: 8px;
+  border-left: 6px solid #0a451b;
+  width: 1100px;
+}
+.suggestionBox1 {
+  background-color: #f8f8f8;
+  padding: 20px;
+  border-radius: 8px;
+}
+
+/* 🔹 Video Section */
+.videoContainer {
+  background-color: #f8f8f8;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+video {
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+  max-width: 100%;
+}
+.videoNavigation {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 10px;  /* Moves buttons below the video */
+}
+
+.navButton {
+  background-color: #f4f4f4;
+  color: black;
+  padding: 10px 20px;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+.navButton:hover {
+  background-color: #ddd;
+}
+
+
+/* 📱 Responsive Design */
+@media (max-width: 768px) {
   .mainContent {
-    display: flex;
-    justify-content: space-between; /* Align left and right columns side by side */
-    margin-top: 30px;
+    flex-direction: column;
   }
-  
+
   .leftColumn {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 20px;
-    padding: 20px;
-    border-right: 2px solid #ccc; /* Add grid line on the right side of the left column */
+    flex-direction: column; /* Stack buttons vertically on small screens */
+    align-items: center;
+    gap: 10px;
   }
-  
-  .unitButton {
-    background-color: #02B2AF;
-    color: black !important;
-    font-weight: bold;
-    text-transform: none;
-    padding: 10px;
-    border-radius: 5px;
-    width: 100%;
-    border: 1px solid #a6a2a2 !important; /* Add borders between buttons */
-    margin-bottom: 10px;
-    text-align: left;
-  }
-  
-  .unitButton:hover {
-    background-color: #f1f3f3;
-  }
-  
+
   .rightColumn {
-    flex: 2;
-    display: flex;
-    flex-direction: column;
-    padding-left: 20px;
+    width: 100%;
+    padding-left: 0;
   }
-  
-  .suggestionBox {
-    background-color: #f8f2be;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-    margin-top: 20px;
+
+  .unitButton {
+    width: 100%;
+    max-width: 300px;
   }
-  
-  .suggestionBox p {
-    font-size: 1rem;
-    color: #333;
+
+  .tabContainer {
+    justify-content: center;
   }
-  
-  /* Make sure layout works well on smaller screens */
-  @media (max-width: 768px) {
-    .mainContent {
-      flex-direction: column; /* Stack columns on small screens */
-    }
-  
-    .leftColumn {
-      width: 100%;
-      align-items: center;
-    }
-  
-    .rightColumn {
-      width: 100%;
-      padding-left: 0;
-    }
-  
-    .unitButton {
-      width: auto;
-      margin: 5px 0;
-    }
-  }
-  
+}
+
+.suggestionBox p {
+  text-align: left !important;
+  font-family: 'Nunito' !important;
+}
+
+
+/* Quiz */
+.quizBox {
+  margin-top: 20px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: left;  /* Aligns everything inside to the left */
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;  /* Ensures everything is aligned to the left */
+}
+
+.quizTitle {
+  font-family: 'Nunito' !important;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.quizQuestion {
+  margin-top: 10px !important;
+  margin-bottom: 10px !important;
+  font-family: 'Nunito' !important;
+  font-size: 20px !important;
+  margin-bottom: 15px;
+  text-align: left; 
+}
+
+.quizOptions {
+  text-transform: none !important;
+  font-family: 'Nunito' !important;
+  display: flex !important;
+  flex-direction: column !important;
+  text-align: left !important;
+  gap: 10px !important; 
+  width: 100% !important; /* Ensures buttons take full width */
+}
+
+.quizButton {
+  text-transform: none !important;
+
+  width: 100% !important;
+  text-align: left !important;
+  padding: 12px !important;
+  font-size: 1rem !important;
+  border: 1px solid #ddd !important;
+  background-color: #f8f9fa !important;
+  transition: all 0.2s ease-in-out !important;
+  display: block !important;
+}
+
+.quizButton:hover {
+  background-color: #e2e6ea;
+}
+/* next page */
+
+.subtopicNavContainer {
+  display: flex;
+  justify-content: center; /* Center the buttons */
+  align-items: center;
+  margin-top: 20px;
+}
+
+.navButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 150px;
+  height: 50px;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  background-color: #fff;
+  color: #4a4a4a;
+  border: 1px solid #ddd;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.navButton:disabled {
+  color: #b0b0b0;
+  cursor: not-allowed;
+  background-color: #f5f5f5;
+}
+
+.navButton:hover:not(:disabled) {
+  background-color: #f0f0f0;
+}
+
+.prevButton {
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px;
+  color: #15602b;
+}
+
+.nextButton {
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px;
+  border-left: none;
+  background-color:#15602b;
+  color: #ffffff;
+}
+
+.loadingContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 150px; /* Adjust height based on layout */
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+}
+
+.quizBox {
+  position: relative;
+  background-color: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
+}
+
+.subtopicText {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  font-style: italic;
+  color: #888;
+  font-size: 14px;
+}
+
+
+.noScoreBox {
+  padding: 20px;
+  text-align: center;
+  font-size: 18px;
+  color: #555;
+}
+
+.goExerciseButton {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: #ff9800;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.goExerciseButton:hover {
+  background-color: #f57c00;
+}
+

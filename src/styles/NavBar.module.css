@@ -1,18 +1,52 @@
 a img {
-    width: 300px;
+    width: 150px; 
+    height: auto; 
+    margin-bottom: 1rem;
 }
 
-header {
-    display: flex;
-    align-items: center;
-    width: 100%;
+p {
+    font-weight: bolder;
 }
 
-nav {
+a {
+    color: white !important;
+}
+
+.nav-container {
+    position: sticky;
+    top: 0;
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: center;
+    background-color: #09451B !important;
+    color: white;
+    width: min-content;
+    height: 100vh;
+    border-top-right-radius: 15px;
+    border-bottom-right-radius: 15px;
+}
+
+.nav-item {
+    width: 200px;
+    padding: 10px;
+    cursor: pointer;
+}
+
+.spacer {
+    flex-grow: 1;
+}
+
+.name-icon {
+    margin-left: 10px;
+    display: flex;
     align-items: center;
-    width: 100%;
+}
+
+.name-icon img {
+    width: 34px;
+    height: 34px;
+    margin-right: 1rem;
+    margin-top: 1rem;
 }
 
 .profile a{
@@ -22,10 +56,16 @@ nav {
 a:hover {
     color: rgb(12, 97, 183);
     cursor: pointer;
+    font-size: larger;
+    transition: 0.5s ease-in-out;
 }
 
 a {
-    text-decoration: none;
+    text-decoration: none !important;
+}
+
+a:visited {
+    color: white;
 }
 
 .profile-btn {
@@ -36,100 +76,56 @@ a {
     cursor: pointer;
 }
 
-/* Dropdown Styling */
-.dropdown {
-    display: flex;
-    flex-direction: column;
-    padding: 10px 0;
-    visibility: hidden;  
-    opacity: 0;          
-    transform: translateY(-10px); 
-    transition: all 0.3s ease;   
-}
-
-.dropdown.show {
-    visibility: visible;
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* Responsive Styling */
-.small-screen-only {
-    display: none;
-}
-
-.large-screen-only {
-    display: block;
-}
-
-/* Media Query for Small Screens */
-@media (max-width: 768px) {
-    .small-screen-only {
-        display: flex; /* Show button on small screens */
-    }
-
-    .large-screen-only {
-        display: none; /* Hide links on small screens */
-    }.profile-btn {
-    display: flex;
-    align-items: center;
-    font-size: 16px;
-    color: black;
+/* ✅ Exercises dropdown container */
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #ffffff;
+    color: #1f4f2c;
+    border-radius: 6px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15);
+    z-index: 1000;
+    padding: 6px 0;
+    min-width: 180px;
+    white-space: nowrap;
+  }
+  
+  /* ✅ Item in the dropdown */
+  .dropdown-item {
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 500;
     cursor: pointer;
-}
-
-/* Dropdown Styling */
-.dropdown {
-    display: flex;
+    transition: background 0.2s ease;
+  }
+  
+  .dropdown-item:hover {
+    background-color: #eaf4ea;
+    color: #15602b;
+  }
+  
+  .dropdown-wrapper {
+    position: relative;
+    transition: margin-bottom 0.3s ease;
+  }
+  
+  .dropdown-wrapper.open {
+    margin-bottom: 290px; 
+  }
+  /* ✅ Positioning container */
+  .name-icon.dropdown {
+    position: relative;
     flex-direction: column;
-    padding: 10px 0;
-    visibility: hidden;  
-    opacity: 0;          
-    transform: translateY(-10px); 
-    transition: all 0.3s ease;   
-}
-
-.dropdown.show {
-    visibility: visible;
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.small-screen-only {
+    align-items: flex-start;
+  }
+  
+  /* ✅ Show dropdown when needed */
+  .show {
+    display: block;
+  }
+  
+  .hide {
     display: none;
-}
-
-@media (max-width: 768px) {
-    .small-screen-only {
-        display: block; 
-    }
-
-    .large-screen-only {
-        display: none; 
-    }
-
-    .dropdown {
-        visibility: hidden; 
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-
-    .dropdown.show {
-        visibility: visible;
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-    .dropdown {
-        visibility: hidden; /* Ensure dropdown stays hidden initially */
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-
-    .dropdown.show {
-        visibility: visible;
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+  }
+  
