@@ -115,20 +115,22 @@ export default function SuggestionPage() {
         console.warn("⚠️ Unexpected response from /suggest:", allData);
         allData = [];
       }
-      
+
       const filtered = allData.filter(
         (item) => item.unit === unit && item.round === round
       );
-      
-      
+
       let selectedRecord = null;
       if (filtered.length > 0) {
-        const incomplete = filtered.find((item) => item.status === "incomplete");
+        const incomplete = filtered.find(
+          (item) => item.status === "incomplete"
+        );
         selectedRecord =
           incomplete ||
-          filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))[0];
+          filtered.sort(
+            (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
+          )[0];
       }
-      
 
       // ✅ Set subtopic from selectedRecord only if autoDetect is true
       let subtopic = unitSubtopics[unit]?.[subtopicIndex] || unit;
@@ -149,11 +151,12 @@ export default function SuggestionPage() {
       if (matched?.status === "complete") {
         setUserAnswers((prev) => ({
           ...prev,
-          [subtopicIndex]: matched.quiz?.answer?.charAt(0).toUpperCase() || true,
+          [subtopicIndex]:
+            matched.quiz?.answer?.charAt(0).toUpperCase() || true,
         }));
       }
-      
-      if(matched){
+
+      if (matched) {
         if (matched?.status === "complete") {
           // ✅ Auto mark as answered so "Next" is enabled
           setUserAnswers((prev) => ({
@@ -192,34 +195,40 @@ export default function SuggestionPage() {
   4. **Exercises** (${exerciseCount})
   5. **Solution** for those exercises
         `;
+        const promt2 = `Generate a multiple-choice quiz with a correct answer for '${subtopic}'. Format as JSON {"question": "...", "options": ["A: ...", "B: ...", "C: ...", "D: ..."], "answer": "A" or "B" or "C" or "D"}`;
 
         const openai = new OpenAI({
           apiKey: OPENAI_API_KEY,
           dangerouslyAllowBrowser: true,
         });
+        const mes = [
+          { role: "system", content: "You are an AI tutor for Python." },
+          { role: "user", content: prompt },
+        ];
 
-        const contentRes = await openai.chat.completions.create({
-          model: "gpt-3.5-turbo",
-          messages: [
-            { role: "system", content: "You are an AI tutor for Python." },
-            { role: "user", content: prompt },
-          ],
-          max_tokens: 1500,
-        });
-
+        const mes2 = [
+          { role: "system", content: "You are an AI quiz generator." },
+          {
+            role: "user",
+            content: promt2,
+          },
+        ];
+        console.time("openai");
+        // เรียก GPT ทั้ง content และ quiz พร้อมกัน
+        const [contentRes, quizRes] = await Promise.all([
+          openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: mes,
+            max_tokens: 1500,
+          }),
+          openai.chat.completions.create({
+            model: "gpt-3.5-turbo",
+            messages: mes2,
+            max_tokens: 500,
+          }),
+        ]);
+        console.timeEnd("openai");
         const generatedContent = contentRes.choices[0].message.content;
-
-        const quizRes = await openai.chat.completions.create({
-          model: "gpt-3.5-turbo",
-          messages: [
-            { role: "system", content: "You are an AI quiz generator." },
-            {
-              role: "user",
-              content: `Generate a multiple-choice quiz with a correct answer for '${subtopic}'. Format as JSON {"question": "...", "options": ["A: ...", "B: ...", "C: ...", "D: ..."], "answer": "A" or "B" or "C" or "D"}`,
-            },
-          ],
-          max_tokens: 500,
-        });
 
         const generatedQuiz = JSON.parse(quizRes.choices[0].message.content);
         const answer = generatedQuiz.answer.trim().toUpperCase();
@@ -229,16 +238,21 @@ export default function SuggestionPage() {
         setCorrectAnswer(answer);
         setLoading(false);
 
-        // ✅ Save to backend
-        await axios.post(`https://ku-review-backend-wvt2.vercel.app/suggest`, {
-          studentId,
-          round,
-          unit,
-          subtopic,
-          content: generatedContent,
-          quiz: generatedQuiz,
-        });
-
+// Save suggestion async
+setTimeout(async () => {
+  try {
+    await axios.post(`https://ku-review-backend-wvt2.vercel.app/suggest`, {
+      studentId,
+      round,
+      unit,
+      subtopic,
+      content: generatedContent,
+      quiz: generatedQuiz,
+    });
+  } catch (err) {
+    console.error("❌ Failed to save suggestion:", err);
+  }
+}, 0);
 
         // ✅ Confirm it's saved
         const confirmRes = await fetch(
