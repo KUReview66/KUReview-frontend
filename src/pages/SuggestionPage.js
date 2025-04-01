@@ -3,7 +3,7 @@ import { Button, Typography, Box } from "@mui/material";
 import Navbar from "../components/navBar";
 import styles from "../styles/Suggestion.module.css";
 import OpenAI from "openai";
-import { OPENAI_API_KEY } from "../config";
+import { OPENAI_API_KEY } from "../";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
 import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
@@ -198,7 +198,7 @@ export default function SuggestionPage() {
         const prompt2 = `Generate a multiple-choice quiz with a correct answer for '${subtopic}'. Format as pure JSON only. Do not include \`\`\` or explanations. Output example: {"question": "...", "options": ["A: ...", "B: ...", "C: ...", "D: ..."], "answer": "A"}`;
 
         const openai = new OpenAI({
-          apiKey: OPENAI_API_KEY,
+          apiKey: process.env.OPENAI_API_KEY,
           dangerouslyAllowBrowser: true,
         });
         const mes = [
