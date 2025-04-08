@@ -194,7 +194,7 @@ export default function SuggestionPage() {
   4. **Exercises** (${exerciseCount})
   5. **Solution** for those exercises
         `;
-        const prompt2 = `Generate a multiple-choice quiz with a correct answer for '${subtopic}'. Format as pure JSON only. Do not include \`\`\` or explanations. Output example: {"question": "...", "options": ["A: ...", "B: ...", "C: ...", "D: ..."], "answer": "A"}`;
+        const prompt2 = `Generate a multiple-choice quiz with a correct answer for '${subtopic}' covering **${difficultyLevel}** difficulty levels. Format as pure JSON only. Do not include \`\`\` or explanations. Output example: {"question": "...", "options": ["A: ...", "B: ...", "C: ...", "D: ..."], "answer": "A"}`;
 
         const openai = new OpenAI({
           apiKey: process.env.REACT_APP_OPENAI_API_KEY,
@@ -295,24 +295,39 @@ export default function SuggestionPage() {
     }
   };
 
-  const handleAnswerSelection = (answer) => {
-    if (answer.toUpperCase() === correctAnswer) {
-      setUserAnswers((prev) => ({ ...prev, [selectedSubtopicIndex]: true }));
+  const handleAnswerSelection = async (answer) => {
+    const isCorrect = answer.toUpperCase() === correctAnswer;
+    const subtopic = unitSubtopics[selectedUnit][selectedSubtopicIndex];
+  
+    if (isCorrect) {
+      setUserAnswers((prev) => ({
+        ...prev,
+        [selectedSubtopicIndex]: answer.toUpperCase().trim(),
+      }));
+  
+      // ✅ Call backend to mark this subtopic as "complete"
+      try {
+        await fetch(
+          `https://ku-review-backend-wvt2.vercel.app/suggest/${username}/${round}/${selectedUnit}/${subtopic}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
+        console.log("Marked as complete:", subtopic);
+      } catch (err) {
+        console.error("❌ Failed to mark subtopic as complete:", err);
+      }
     } else {
       alert("Incorrect answer! Please try again.");
     }
   };
+  
   const handleNextSubtopic = async () => {
     try {
-      await fetch(
-        `https://ku-review-backend-wvt2.vercel.app/suggest/${username}/${round}/${selectedUnit}/${unitSubtopics[selectedUnit][selectedSubtopicIndex]}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+
     } catch (err) {
       console.error("❌ Failed to update progress status:", err);
     }
@@ -477,29 +492,47 @@ export default function SuggestionPage() {
                             </Typography>
 
                             <div className={styles.quizOptions}>
-                              {quiz.options.map((option, index) => {
-                                const isCorrect =
-                                  option.charAt(0).toUpperCase() ===
-                                  correctAnswer;
-                                return (
-                                  <Button
-                                    key={index}
-                                    className={`${styles.quizButton} ${
-                                      userAnswers[selectedSubtopicIndex] ===
-                                      option.charAt(0)
-                                        ? isCorrect
-                                          ? styles.correctAnswer
-                                          : styles.incorrectAnswer
-                                        : ""
-                                    }`}
-                                    onClick={() =>
-                                      handleAnswerSelection(option.charAt(0))
-                                    }
-                                  >
-                                    {option}
-                                  </Button>
-                                );
-                              })}
+                            <div className={styles.quizOptions}>
+  {quiz.options.map((option, index) => {
+    const optionLetter = option.charAt(0).toUpperCase();
+    const isSelected = userAnswers[selectedSubtopicIndex] === optionLetter;
+    const isCorrectAnswer = optionLetter === correctAnswer;
+
+    console.log("correctAnswer:", correctAnswer);
+console.log("isSelected && isCorrectAnswer:", isSelected && isCorrectAnswer);
+console.log(isSelected)
+
+    return (
+      <Button
+  key={index}
+  className={`${styles.quizButton} ${
+    isSelected
+      ? isCorrectAnswer
+        ? styles.correctAnswer
+        : styles.incorrectAnswer
+      : ""
+  }`}
+  onClick={() => handleAnswerSelection(optionLetter)}
+  disabled={!!userAnswers[selectedSubtopicIndex]}
+  style={{
+    width: "100%",
+    justifyContent: "space-between",
+    display: "flex",
+    alignItems: "center", 
+    padding: "10px 16px",
+    fontSize: "16px",
+  }}
+>
+  <span>{option}</span>
+  {isSelected && isCorrectAnswer && (
+    <span style={{ marginLeft: "12px", fontSize: "20px" }}>✅</span>
+  )}
+</Button>
+
+    );
+  })}
+</div>
+
                             </div>
                           </Box>
                         )}
