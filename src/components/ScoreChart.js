@@ -1,9 +1,7 @@
-// src/components/ScoreChart.js
-
-import React from 'react';
 import { Bar } from 'react-chartjs-2';
 
 function ScoreChart() {
+
   const data = {
     labels: ['Unit 1 Loop', 'Unit 2 Condition', 'Unit 3 List', 'Unit 4 Dictionary'],
     datasets: [
