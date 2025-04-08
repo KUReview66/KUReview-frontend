@@ -194,7 +194,7 @@ export default function SuggestionPage() {
   4. **Exercises** (${exerciseCount})
   5. **Solution** for those exercises
         `;
-        const prompt2 = `Generate a multiple-choice quiz with a correct answer for '${subtopic}'. Format as pure JSON only. Do not include \`\`\` or explanations. Output example: {"question": "...", "options": ["A: ...", "B: ...", "C: ...", "D: ..."], "answer": "A"}`;
+        const prompt2 = `Generate a multiple-choice quiz with a correct answer for '${subtopic}' covering **${difficultyLevel}** difficulty levels. Format as pure JSON only. Do not include \`\`\` or explanations. Output example: {"question": "...", "options": ["A: ...", "B: ...", "C: ...", "D: ..."], "answer": "A"}`;
 
         const openai = new OpenAI({
           apiKey: process.env.REACT_APP_OPENAI_API_KEY,
