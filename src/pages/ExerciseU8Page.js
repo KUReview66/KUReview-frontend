@@ -148,10 +148,11 @@ const ExerciseU8Page = () => {
         setCurrentIndex(currentIndex + 1);
         setFade(true);
       } else {
-        // 🔥 Wait a moment to make sure last answer is set before submitting
+        setLoading(true);
+  
         setTimeout(() => {
-          handleSubmit(updated); // 👈 ส่ง updated ไปแทนการดึงจาก state
-        }, 100);
+          handleSubmit(updated).finally(() => setLoading(false));
+        }, 300); // Small delay for UX smoothness
       }
     }, 300);
   };
