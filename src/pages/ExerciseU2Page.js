@@ -142,15 +142,17 @@ const ExerciseU2Page = () => {
     updated[currentIndex] = option;
     setUserAnswers(updated);
     setFade(false);
-
+  
     setTimeout(() => {
       if (currentIndex < 9) {
         setCurrentIndex(currentIndex + 1);
         setFade(true);
       } else {
+        setLoading(true);
+  
         setTimeout(() => {
-          handleSubmit(updated);
-        }, 100);
+          handleSubmit(updated).finally(() => setLoading(false));
+        }, 300); // Small delay for UX smoothness
       }
     }, 300);
   };
