@@ -13,23 +13,33 @@ function LogInPage() {
 
     const handleLogin = async (e) => {
         e.preventDefault();
-
+    
         const loginData = {
-            username: username, 
+            username: username,
             password: password
-        }
-
-
+        };
+    
         try {
-            const response = await axios.post('https://ku-review-backend-wvt2.vercel.app/login', loginData);
+            // const response = await axios.post('https://ku-review-backend-wvt2.vercel.app/login', loginData);
+    
             localStorage.setItem('username', username);
             localStorage.setItem('password', password);
-            navigate(`score/${username}`);
+    
+            const scoreRes = await axios.get(`https://ku-review-backend-wvt2.vercel.app/student-score/topic-wise/${username}`);
+            const scoreData = scoreRes.data;
+    
+            if (scoreData["message"]) {
+                navigate('/pre-exercise');
+            } else {
+                navigate(`/score/${username}`);
+            }
+    
         } catch (err) {
-            console.error(err)
-            alert('Invalid login detail')
+            console.error(err);
+            alert('Invalid login detail');
         }
-    }
+    };
+    
 
     return (
         <div className={styles['full-page']}>

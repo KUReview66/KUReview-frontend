@@ -13,6 +13,7 @@ import ExerciseU7Page from "./pages/ExerciseU7Page";
 import ExerciseU8Page from "./pages/ExerciseU8Page";
 import ExerciseU9Page from "./pages/ExerciseU9Page";
 import ScoreHistoryPage from "./pages/scorehistory";
+import PreExercisePage from "./pages/PreExercisePage";
 
 
 export default function App() {
@@ -33,7 +34,7 @@ export default function App() {
         <Route path="/exerciseU8/:username" element={<ExerciseU8Page  />} />
         <Route path="/exerciseU9/:username" element={<ExerciseU9Page  />} />
         <Route path="/history/:username" element={<ScoreHistoryPage  />} />
-
+        <Route path="/pre-exercise" element={<PreExercisePage  />} />
 
 
       </Routes>
