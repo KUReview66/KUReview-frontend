@@ -2,38 +2,40 @@ import React, { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import unitSubtopics from "../data/unitdata";
 import styles from "../styles/Suggestion.module.css";
-import generateQuestions from "../components/generateQuestions";
+import finalQuestions from "../data/pre-exam.json"; // 👈 Import JSON file
 import { getImprovementSuggestion } from "../components/improvementGPT";
 import { Box, Button, Typography, CircularProgress } from "@mui/material";
 import { FaRedoAlt } from "react-icons/fa";
 import NotFound from "./NotFound";
-
-const highlightCode = (text) => {
-    const parts = text.split(/(`[^`]+`)/g); // หาส่วนที่อยู่ใน backtick
-    return parts.map((part, index) => {
-        if (part.startsWith("`") && part.endsWith("`")) {
-            return (
-                <code
-                    key={index}
-                    style={{
-                    backgroundColor: "#f4f4f4",
-                    fontFamily: "monospace",
-                    padding: "2px 5px",
-                    borderRadius: "4px",
-                    color: "#c7254e",
-                    }}
-                >
-                    {part.slice(1, -1)}
-                </code>
-            );
-        }
-        return (
-            <span className={styles.quizQuestion} key={index}>
-            {part}
-            </span>
+import ReactMarkdown from "react-markdown";
+import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
+import { vscDarkPlus } from "react-syntax-highlighter/dist/esm/styles/prism";
+// Use this to render code blocks cleanly
+const renderMarkdown = (text) => (
+  <ReactMarkdown
+    children={text}
+    components={{
+      code({ node, inline, className, children, ...props }) {
+        const match = /language-(\w+)/.exec(className || "");
+        return !inline && match ? (
+          <SyntaxHighlighter
+            style={vscDarkPlus}
+            language={match[1]}
+            PreTag="div"
+            className="codeBlock"  // ✅ Add class here
+            children={String(children).replace(/\n$/, "")}
+            {...props}
+          />
+        ) : (
+          <code className={className} {...props}>
+            {children}
+          </code>
         );
-    });
-};
+      },
+    }}
+  />
+);
+
 
 const PreExercisePage = () => {
     const unitKey = "Pre-Exan";
@@ -60,23 +62,7 @@ const PreExercisePage = () => {
     }, []);
   
     const fetchQuestions = async () => {
-      const allTopics = Object.values(unitSubtopics).flat();;
-      let selectedSubtopics = [];
-  
-      if (allTopics.length >= 10) {
-        selectedSubtopics = allTopics
-          .sort(() => 0.5 - Math.random())
-          .slice(0, 10);
-      } else {
-        selectedSubtopics = [...allTopics];
-        while (selectedSubtopics.length < 10) {
-          const rand = allTopics[Math.floor(Math.random() * allTopics.length)];
-          selectedSubtopics.push(rand);
-        }
-      }
-  
-      const result = await generateQuestions(unitKey, selectedSubtopics);
-      setQuestions(result);
+      setQuestions(finalQuestions); // Show all 35 questions
     };
   
     useEffect(() => {
@@ -143,22 +129,22 @@ const PreExercisePage = () => {
       setFade(false);
     
       setTimeout(() => {
-        if (currentIndex < 9) {
+        if (currentIndex < questions.length - 1) {
           setCurrentIndex(currentIndex + 1);
           setFade(true);
         } else {
           setLoading(true);
-    
           setTimeout(() => {
             handleSubmit(updated).finally(() => setLoading(false));
-          }, 300); // Small delay for UX smoothness
+          }, 300);
         }
+        
       }, 300);
     };
   
     const calculateScore = () => {
       return questions.reduce((score, q, idx) => {
-        return q.correctAnswer === userAnswers[idx] ? score + 10 : score;
+        return q.correctAnswer === userAnswers[idx] ? score + 1 : score;
       }, 0);
     };
     const handleSubmit = async (finalAnswers = userAnswers) => {
@@ -364,12 +350,12 @@ const PreExercisePage = () => {
                         </Typography>
                       </div>
                       <Typography variant="h6" className={styles.quizTitle}>
-                        Question {currentIndex + 1} / 10
+                      Question {currentIndex + 1} / {questions.length}
                       </Typography>
   
-                      <Typography className={styles.quizQuestion}>
-                        {highlightCode(questions[currentIndex].question)}
-                      </Typography>
+                      <div className={styles.quizQuestion}>
+  {renderMarkdown(questions[currentIndex].question)}
+</div>
   
                       <div className={styles.quizOptions}>
                         {questions[currentIndex].options.map((option, idx) => (
@@ -405,33 +391,9 @@ const PreExercisePage = () => {
                           marginBottom: "20px",
                         }}
                       >
-                        {calculateScore()} / 100
+                        {calculateScore()} / 35
                       </Typography>
-                      <div style={{ textAlign: "right" }}>
-                        <Button
-                          variant="contained"
-                          color="primary"
-                          style={{
-                            fontFamily: "Nunito",
-                            marginBottom: "20px",
-                            textTransform: "none",
-                            background: "#b66136",
-                          }}
-                          onClick={handleRedoQuiz}
-                        >
-                          <span
-                            style={{
-                              display: "flex",
-                              alignItems: "center",
-                              gap: "8px",
-                              fontSize: "15px",
-                            }}
-                          >
-                            <FaRedoAlt />
-                            Redo Exercise
-                          </span>
-                        </Button>
-                      </div>
+                      
   
                       {suggestion && (
                         <Box

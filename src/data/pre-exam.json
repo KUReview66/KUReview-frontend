@@ -1,0 +1,496 @@
+[
+    {
+      "unit": "02-Basic",
+      "subtopic": "Arithmetic Expression",
+      "question": "What will be the output of the following code?\n\n```python\nx = 10\nx += 5 * 2\nprint(x)\n```",
+      "options": [
+        "15",
+        "30",
+        "25",
+        "20"
+      ],
+      "correctAnswer": "20",
+      "correctLetter": "D",
+      "explanation": "Multiplication has higher precedence: 5 * 2 = 10, then 10 + 10 = 20."
+    },
+    {
+      "unit": "02-Basic",
+      "subtopic": "String Formatting",
+      "question": "What will the output be?\n\n```python\nname = 'Alice'\nage = 30\nprint(f'{name} is {age} years old')\n```",
+      "options": [
+        "Alice is 30 years old",
+        "30 is Alice years old",
+        "Error",
+        "name is age years old"
+      ],
+      "correctAnswer": "Alice is 30 years old",
+      "correctLetter": "A",
+      "explanation": "Formatted string literals (f-strings) evaluate expressions inside curly braces."
+    },
+    {
+      "unit": "02-Basic",
+      "subtopic": "Input Statement",
+      "question": "Which function is used to receive input from users in Python?",
+      "options": [
+        "scan()",
+        "read()",
+        "print()",
+        "input()"
+      ],
+      "correctAnswer": "input()",
+      "correctLetter": "D",
+      "explanation": "`input()` reads a line from input, usually from the user."
+    },
+    {
+      "unit": "02-Basic",
+      "subtopic": "Data Type Conversion",
+      "question": "What is the output?\n\n```python\nx = '5'\nprint(int(x) + 2)\n```",
+      "options": [
+        "Error",
+        "52",
+        "5 2",
+        "7"
+      ],
+      "correctAnswer": "7",
+      "correctLetter": "D",
+      "explanation": "String '5' is converted to integer and then added to 2."
+    },
+    {
+      "unit": "02-Basic",
+      "subtopic": "Variable",
+      "question": "Which of the following is a valid Python variable name?",
+      "options": [
+        "my-var",
+        "my_var",
+        "class",
+        "2ndVar"
+      ],
+      "correctAnswer": "my_var",
+      "correctLetter": "B",
+      "explanation": "Variable names can't start with numbers or use dashes; `class` is a keyword."
+    },
+    {
+      "unit": "03-Subroutine",
+      "subtopic": "User-defined Function",
+      "question": "What will this function print?\n\n```python\ndef greet():\n    print('Hello!')\ngreet()\n```",
+      "options": [
+        "Hello!",
+        "Error",
+        "Nothing",
+        "greet"
+      ],
+      "correctAnswer": "Hello!",
+      "correctLetter": "A",
+      "explanation": "The function `greet` is called and prints 'Hello!'."
+    },
+    {
+      "unit": "03-Subroutine",
+      "subtopic": "Built-in Functions",
+      "question": "What is the output?\n\n```python\nprint(len('Python'))\n```",
+      "options": [
+        "6",
+        "5",
+        "7",
+        "Error"
+      ],
+      "correctAnswer": "6",
+      "correctLetter": "A",
+      "explanation": "`len()` returns the number of characters in the string."
+    },
+    {
+      "unit": "03-Subroutine",
+      "subtopic": "Function with Default Parameters",
+      "question": "What will be printed?\n\n```python\ndef add(x, y=5):\n    print(x + y)\nadd(3)\n```",
+      "options": [
+        "5",
+        "3",
+        "Error",
+        "8"
+      ],
+      "correctAnswer": "8",
+      "correctLetter": "D",
+      "explanation": "Function uses default value for `y` which is 5, so 3 + 5 = 8."
+    },
+    {
+      "unit": "03-Subroutine",
+      "subtopic": "Local and Global Variables",
+      "question": "What is the output?\n\n```python\nx = 10\ndef func():\n    x = 5\n    print(x)\nfunc()\n```",
+      "options": [
+        "Error",
+        "10",
+        "0",
+        "5"
+      ],
+      "correctAnswer": "5",
+      "correctLetter": "D",
+      "explanation": "Local variable `x` inside function shadows the global `x`."
+    },
+    {
+      "unit": "03-Subroutine",
+      "subtopic": "Getting Help in Python",
+      "question": "Which function provides documentation in Python?",
+      "options": [
+        "info()",
+        "explain()",
+        "help()",
+        "doc()"
+      ],
+      "correctAnswer": "help()",
+      "correctLetter": "C",
+      "explanation": "`help()` is used to access documentation on modules, classes, etc."
+    },
+    {
+      "unit": "05-Selection",
+      "subtopic": "If Statement",
+      "question": "What is printed?\n\n```python\nx = 5\nif x > 3:\n    print('Yes')\n```",
+      "options": [
+        "Error",
+        "Yes",
+        "No",
+        "Nothing"
+      ],
+      "correctAnswer": "Yes",
+      "correctLetter": "B",
+      "explanation": "Condition `x > 3` is true, so 'Yes' is printed."
+    },
+    {
+      "unit": "05-Selection",
+      "subtopic": "If-Else Statement",
+      "question": "What is the output?\n\n```python\nx = 2\nif x > 5:\n    print('A')\nelse:\n    print('B')\n```",
+      "options": [
+        "Error",
+        "B",
+        "A",
+        "2"
+      ],
+      "correctAnswer": "B",
+      "correctLetter": "B",
+      "explanation": "Condition is false, so else block is executed."
+    },
+    {
+      "unit": "05-Selection",
+      "subtopic": "Boolean Operators",
+      "question": "What does this print?\n\n```python\nprint(True and False)\n```",
+      "options": [
+        "None",
+        "True",
+        "False",
+        "Error"
+      ],
+      "correctAnswer": "False",
+      "correctLetter": "C",
+      "explanation": "`True and False` evaluates to False."
+    },
+    {
+      "unit": "05-Selection",
+      "subtopic": "Nested Conditions",
+      "question": "What is the result?\n\n```python\nx = 10\nif x > 5:\n    if x < 15:\n        print('Valid')\n```",
+      "options": [
+        "Error",
+        "Valid",
+        "Invalid",
+        "Nothing"
+      ],
+      "correctAnswer": "Valid",
+      "correctLetter": "B",
+      "explanation": "Both conditions are true, so 'Valid' is printed."
+    },
+  
+    {
+      "unit": "05-Selection",
+      "subtopic": "Chained Conditions",
+      "question": "What will this code print?\n\n```python\nx = 7\nif 5 < x < 10:\n    print('In Range')\n```",
+      "options": [
+        "In Range",
+        "Error",
+        "7",
+        "Out of Range"
+      ],
+      "correctAnswer": "In Range",
+      "correctLetter": "A",
+      "explanation": "Chained conditions are valid in Python and work like `5 < x and x < 10`."
+    },
+  
+    {
+      "unit": "06-Repetition",
+      "subtopic": "For Statement",
+      "question": "What will this output?\n\n```python\nfor i in range(3):\n    print(i)\n```",
+      "options": [
+        "3 2 1",
+        "0 1 2 3",
+        "1 2 3",
+        "0 1 2"
+      ],
+      "correctAnswer": "0 1 2",
+      "correctLetter": "D",
+      "explanation": "`range(3)` gives 0, 1, 2."
+    },
+    {
+      "unit": "06-Repetition",
+      "subtopic": "Loop and a Half",
+      "question": "Which construct simulates a loop-and-a-half in Python?",
+      "options": [
+        "while with break",
+        "if-else",
+        "for loop",
+        "def"
+      ],
+      "correctAnswer": "while with break",
+      "correctLetter": "A",
+      "explanation": "`while` with `break` can exit midway, simulating a loop-and-a-half."
+    },
+    {
+      "unit": "06-Repetition",
+      "subtopic": "Infinite Loop",
+      "question": "What is the output?\n\n```python\nwhile True:\n    break\nprint('Done')\n```",
+      "options": [
+        "Infinite",
+        "Nothing",
+        "Done",
+        "Error"
+      ],
+      "correctAnswer": "Done",
+      "correctLetter": "C",
+      "explanation": "`break` stops the infinite loop after one iteration."
+    },
+    {
+      "unit": "06-Repetition",
+      "subtopic": "While Statement",
+      "question": "How many times will this loop run?\n\n```python\nx = 0\nwhile x < 3:\n    x += 1\nprint(x)\n```",
+      "options": [
+        "3",
+        "2",
+        "4",
+        "0"
+      ],
+      "correctAnswer": "3",
+      "correctLetter": "A",
+      "explanation": "The loop runs while x is less than 3, incrementing each time."
+    },
+    {
+      "unit": "06-Repetition",
+      "subtopic": "Counting Loop",
+      "question": "What is printed?\n\n```python\nfor i in range(1, 4):\n    print(i)\n```",
+      "options": [
+        "1 2 3 4",
+        "0 1 2",
+        "2 3 4",
+        "1 2 3"
+      ],
+      "correctAnswer": "1 2 3",
+      "correctLetter": "D",
+      "explanation": "`range(1, 4)` gives 1, 2, 3."
+    },
+    {
+      "unit": "07-List",
+      "subtopic": "Operations on List",
+      "question": "What is the output?\n\n```python\nlst = [1, 2]\nlst += [3]\nprint(lst)\n```",
+      "options": [
+        "[1, 2, [3]]",
+        "[1, 2]",
+        "[3]",
+        "[1, 2, 3]"
+      ],
+      "correctAnswer": "[1, 2, 3]",
+      "correctLetter": "D",
+      "explanation": "`+=` appends elements from the right-hand list to the original."
+    },
+    {
+      "unit": "07-List",
+      "subtopic": "Properties of List vs. String",
+      "question": "What differentiates a list from a string in Python?",
+      "options": [
+        "Strings store numbers",
+        "Lists are mutable",
+        "Strings are mutable",
+        "Both are immutable"
+      ],
+      "correctAnswer": "Lists are mutable",
+      "correctLetter": "B",
+      "explanation": "Lists can be changed (mutable), strings cannot."
+    },
+    {
+      "unit": "07-List",
+      "subtopic": "List Methods",
+      "question": "What does this code print?\n\n```python\nlst = [1, 2, 3]\nlst.remove(2)\nprint(lst)\n```",
+      "options": [
+        "[1, 3]",
+        "[1, 2, 3]",
+        "[2, 3]",
+        "[1, 2]"
+      ],
+      "correctAnswer": "[1, 3]",
+      "correctLetter": "A",
+      "explanation": "`remove(2)` deletes the first occurrence of 2."
+    },
+    {
+      "unit": "07-List",
+      "subtopic": "Introduction to Collection",
+      "question": "Which one is a collection data type in Python?",
+      "options": [
+        "list",
+        "float",
+        "int",
+        "str"
+      ],
+      "correctAnswer": "list",
+      "correctLetter": "A",
+      "explanation": "`list` is a collection that holds multiple items."
+    },
+    {
+      "unit": "07-List",
+      "subtopic": "List Slicing",
+      "question": "What is the output?\n\n```python\nnums = [0, 1, 2, 3, 4]\nprint(nums[::2])\n```",
+      "options": [
+        "[0, 2, 4]",
+        "[0, 1, 2]",
+        "[1, 3]",
+        "[2, 4]"
+      ],
+      "correctAnswer": "[0, 2, 4]",
+      "correctLetter": "A",
+      "explanation": "Slicing with `::2` selects every second element."
+    },
+    {
+      "unit": "08-File",
+      "subtopic": "Reading a Text File",
+      "question": "Which method reads all lines from a file?\n\n```python\nf = open('file.txt')\n...\n```",
+      "options": [
+        "f.line()",
+        "f.read()",
+        "f.scanlines()",
+        "f.readlines()"
+      ],
+      "correctAnswer": "f.readlines()",
+      "correctLetter": "D",
+      "explanation": "`readlines()` reads the whole file as a list of lines."
+    },
+    {
+      "unit": "08-File",
+      "subtopic": "List Comprehension",
+      "question": "What is the output?\n\n```python\nprint([x*x for x in range(3)])\n```",
+      "options": [
+        "[0, 1, 4]",
+        "[2, 4, 6]",
+        "[1, 2, 3]",
+        "[0, 1, 2]"
+      ],
+      "correctAnswer": "[0, 1, 4]",
+      "correctLetter": "A",
+      "explanation": "The list comprehension squares each number from 0 to 2."
+    },
+    {
+      "unit": "08-File",
+      "subtopic": "Nested List",
+      "question": "What will be printed?\n\n```python\nmatrix = [[1, 2], [3, 4]]\nprint(matrix[1][0])\n```",
+      "options": [
+        "3",
+        "1",
+        "2",
+        "4"
+      ],
+      "correctAnswer": "3",
+      "correctLetter": "A",
+      "explanation": "`matrix[1][0]` accesses second row, first element."
+    },
+    {
+      "unit": "08-File",
+      "subtopic": "Function vs. Method",
+      "question": "What is the difference between a method and a function in Python?",
+      "options": [
+        "Method is global",
+        "No difference",
+        "Function is only in NumPy",
+        "Method is tied to an object"
+      ],
+      "correctAnswer": "Method is tied to an object",
+      "correctLetter": "D",
+      "explanation": "Methods are functions bound to objects like `str.upper()`."
+    },
+    {
+      "unit": "08-File",
+      "subtopic": "Reading a Text File",
+      "question": "What will be the result of this code snippet?\n\n```python\nwith open('example.txt', 'w') as f:\n    f.write('Hello')\n\nwith open('example.txt', 'r') as f:\n    print(f.read())\n```",
+      "options": [
+        "Error",
+        "['Hello']",
+        "Hello",
+        "None"
+      ],
+      "correctAnswer": "Hello",
+      "correctLetter": "C",
+      "explanation": "The file is written with 'Hello' and then read immediately, printing 'Hello'."
+    },
+    {
+      "unit": "09-Numpy",
+      "subtopic": "Numpy with 1D-Array",
+      "question": "What is the output?\n\n```python\nimport numpy as np\nx = np.array([1,2,3])\nprint(x.shape)\n```",
+      "options": [
+        "(3,)",
+        "(3,1)",
+        "(1,3)",
+        "(3)"
+      ],
+      "correctAnswer": "(3,)",
+      "correctLetter": "A",
+      "explanation": "1D NumPy arrays show shape as a tuple with one element."
+    },
+    {
+      "unit": "09-Numpy",
+      "subtopic": "Array vs. List",
+      "question": "Which is a key difference between NumPy arrays and Python lists?",
+      "options": [
+        "Lists use less memory",
+        "Arrays are immutable",
+        "Lists are faster",
+        "Arrays support vectorized operations"
+      ],
+      "correctAnswer": "Arrays support vectorized operations",
+      "correctLetter": "D",
+      "explanation": "NumPy arrays support element-wise operations efficiently."
+    },
+    {
+      "unit": "09-Numpy",
+      "subtopic": "Reading a Text File using Numpy",
+      "question": "Which NumPy method can load text data from a file?",
+      "options": [
+        "np.scanfile()",
+        "np.loadtxt()",
+        "np.read()",
+        "np.open()"
+      ],
+      "correctAnswer": "np.loadtxt()",
+      "correctLetter": "B",
+      "explanation": "`np.loadtxt()` is commonly used to read numerical data from text files."
+    },
+    {
+      "unit": "09-Numpy",
+      "subtopic": "Numpy with 2D-Array",
+      "question": "What is the shape of this array?\n\n```python\nimport numpy as np\na = np.array([[1,2],[3,4]])\nprint(a.shape)\n```",
+      "options": [
+        "(2, 2)",
+        "(1, 4)",
+        "(4,)",
+        "(2,)"
+      ],
+      "correctAnswer": "(2, 2)",
+      "correctLetter": "A",
+      "explanation": "The array has 2 rows and 2 columns."
+    },
+    {
+      "unit": "09-Numpy",
+      "subtopic": "Numpy with 1D-Array",
+      "question": "What will this print?\n\n```python\nimport numpy as np\narr = np.array([10, 20, 30])\nprint(arr[1])\n```",
+      "options": [
+        "10",
+        "30",
+        "Error",
+        "20"
+      ],
+      "correctAnswer": "20",
+      "correctLetter": "D",
+      "explanation": "`arr[1]` accesses the second element of the array, which is 20."
+    }
+  
+  ]
+  

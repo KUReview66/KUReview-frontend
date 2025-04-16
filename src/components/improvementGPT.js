@@ -7,7 +7,7 @@ const openai = new OpenAI({
 
 export const getImprovementSuggestion = async (wrongAnswers, unitName) => {
   const formattedMistakes = wrongAnswers.map((entry, i) => {
-    return `${i + 1}. Subtopic: ${entry.subtopic}\nQ: ${entry.question}\nYour Answer: ${entry.userAnswer}\nCorrect Answer: ${entry.correctAnswer}`;
+    return `${i + 1}. Subtopic: ${entry.subtopic}\nQ: ${entry.question}\nUser Answer: ${entry.userAnswer}\nCorrect Answer: ${entry.correctAnswer}`;
   }).join("\n\n");
 
   const prompt = `
@@ -17,6 +17,7 @@ ${formattedMistakes}
 
 Please write a short and helpful improvement suggestion (2-3 sentences) that tells them what topics they should review or practice more.
 `;
+console.log(prompt)
 
   try {
     const res = await openai.chat.completions.create({

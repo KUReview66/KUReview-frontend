@@ -355,3 +355,9 @@ video {
   background-color: #f8d7da !important;
   color: #721c24 !important;
 }
+
+.codeBlock pre {
+  margin: 0 !important; /* removes top and bottom margin */
+  padding: 0 !important; /* optional: you can tweak or remove this */
+  background: transparent; /* optional: lets theme background show */
+}
